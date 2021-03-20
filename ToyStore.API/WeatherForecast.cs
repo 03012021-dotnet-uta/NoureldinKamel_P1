@@ -1,6 +1,6 @@
 using System;
 
-namespace ToyStory.API
+namespace ToyStore.API
 {
     public class WeatherForecast
     {
