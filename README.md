@@ -1,4 +1,4 @@
-### ToyStore Project
+# ToyStore Project
 
 ## Requirements
 
@@ -19,7 +19,7 @@
 - Follow SOLID principles.
 - Use modularization of methods and creation of classes to handle logically related functionality.
 
-# functionality
+## functionality
 
 - place orders at store locations
 - add a new customer
@@ -36,28 +36,28 @@
 - (optional: display statistics based on order history)
 - (optional: asynchronous network & file I/O)
 
-# design
+## design
 
 - use EF Core (either database-first approach or code-first approach)
 - use a SQL DB in third normal form (3NF)
 - define and use at least one interface
 - (optional: Deploy to publicly available Azure App Service website)
 
-# core / domain and business logic
+## core / domain and business logic
 
 - is .NET class library
 - contains all business logic
 - contains domain classes (customer, order, store, product, etc.)
 - documentation with XML comments on all public types and members
 
-# customer
+## customer
 
 - has first name, last name, etc.
 - (optional: has a default store location to order from)
 - customer can view orders from whole store
 - customer can order
 
-# order details
+## order details
 
 - has a store location
 - has a customer
@@ -66,7 +66,7 @@
 - rejects orders with unreasonably high product quantities (or more than is available)
 - (optional: some additional business rules, like special deals, bundles)
 
-# location
+## location
 
 - has an inventory
 - inventory decreases when orders are accepted
@@ -75,7 +75,7 @@
 - tells you the other location has your option
 - additional fee for ordering from a store using another store
 
-# product
+## product
 
 - has a
 - description
@@ -83,14 +83,14 @@
 - quantity available
 - name
 
-# (optional) offer
+## (optional) offer
 
 - has multiple products
 - description
 - price
 - inventory quantity <-- must not be greater than each of the products
 
-# user interface
+## user interface
 
 - HTML, CSS, and JavaScript pages that utilize a ASP.NET Core Web Application
 - separate request processing and presentation concerns with MVC pattern
@@ -98,7 +98,7 @@
 - keep CodeNamesLikeThis out of the visible UI.
 - Create different models for customers to view from and populate it from database model
 
-# data access
+## data access
 
 - contained in separate class library project
 - use Dependency Injection for database context
@@ -106,7 +106,7 @@
 - contains data access logic but no business logic
 - use Repository Pattern for Separation of Concerns
 
-# test
+## test
 
 - at least 20 test methods
 - focus on unit testing business logic
