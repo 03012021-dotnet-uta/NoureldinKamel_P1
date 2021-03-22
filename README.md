@@ -98,7 +98,7 @@
 - keep CodeNamesLikeThis out of the visible UI.
 - Create different models for customers to view from and populate it from database model
 
-## data access
+# data access
 
 - contained in separate class library project
 - use Dependency Injection for database context
@@ -110,3 +110,9 @@
 
 - at least 20 test methods
 - focus on unit testing business logic
+
+### for macos to create a SQL Server:
+
+> docker run --name sql_server_demo -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=1Secure\*Password1' -e 'MSSQL_PID=Enterprise' -p 1433:1433 -d microsoft/mssql-server-linux:2017-latest
+
+> docker exec -it sql_server_demo /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 1Secure\*Password1
