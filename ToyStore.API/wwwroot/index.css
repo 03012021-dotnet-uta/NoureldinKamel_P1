@@ -1,0 +1,47 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif;
+  font-size: 15pt;
+  color: darkcyan;
+}
+
+body {
+  background-color: #d3d3d3;
+}
+
+h1 {
+  font-size: 30pt;
+}
+
+h2 {
+  font-size: 23pt;
+}
+
+.section {
+  padding: 2vh 5vw;
+}
+
+.round-border {
+  border-radius: 5pt;
+}
+
+.product-carousel {
+  background-color: white;
+  padding: 5px;
+  border: 0;
+  line-height: 0.5;
+}
+
+.toy-card {
+  height: 70px;
+  background-color: darkcyan;
+  display: inline-block;
+  width: 120px;
+  margin: 0;
+  border: 0;
+}
+.card-img-container > img {
+  height: 20px;
+}

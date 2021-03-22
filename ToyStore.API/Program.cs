@@ -14,6 +14,8 @@ namespace ToyStore.API
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
+            // do things
+            // then run
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

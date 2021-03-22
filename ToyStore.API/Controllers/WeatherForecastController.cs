@@ -7,6 +7,12 @@ using Microsoft.Extensions.Logging;
 
 namespace ToyStore.API.Controllers
 {
+    /// <summary>
+    /// this route is: weatherforecast
+    /// it is not case sensitive
+    /// when fetch is called fetch("weatherforecast")
+    /// it comes into this method
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
@@ -24,16 +30,18 @@ namespace ToyStore.API.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        // public IEnumerable<WeatherForecast> Get()
+        public IEnumerable<string> Get()
         {
             var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+            // return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            // {
+            //     Date = DateTime.Now.AddDays(index),
+            //     TemperatureC = rng.Next(-20, 55),
+            //     Summary = Summaries[rng.Next(Summaries.Length)]
+            // })
+            // .ToArray();
+            return new string[] { "hehe", "xd" };
         }
     }
 }
