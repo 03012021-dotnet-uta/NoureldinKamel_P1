@@ -1,6 +1,7 @@
 console.log("js working");
 
-fetch("WeatherForecast")
+// fetch("api/WeatherForecast")
+fetch("api/toy")
     .then(response => response.json())
     .then(textjson => {
         console.log(textjson);

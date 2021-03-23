@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using ToyStore.Business.Interfaces;
+using ToyStore.Models.Interfaces;
 
-namespace ToyStore.Business.Models
+namespace ToyStore.Models.DBModels
 {
     /// <summary>
     /// Location in which a branch of the store exists

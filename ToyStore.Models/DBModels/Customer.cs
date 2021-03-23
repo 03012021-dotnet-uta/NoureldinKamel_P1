@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
-using ToyStore.Business.Interfaces;
 
-namespace ToyStore.Business.Models
+namespace ToyStore.Models.DBModels
 {
     /// <summary>
     /// A user which buys from a location
@@ -21,7 +20,18 @@ namespace ToyStore.Business.Models
         /// </summary>
         /// <value></value>
         public string LastName { get; set; }
+
+        /// <summary>
+        /// username that customer will use to login
+        /// it should be unique
+        /// </summary>
+        /// <value></value>
         public string CustomerUName { get; set; }
+
+        /// <summary>
+        /// password for logging in to customer account
+        /// </summary>
+        /// <value></value>
         public string CustomerPass { get; set; }
 
         /// <summary>

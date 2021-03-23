@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToyStore.Business", "ToySto
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToyStore.Repository", "ToyStore.Repository\ToyStore.Repository.csproj", "{D85202FB-785A-4F64-A6BA-CC669BD50D7C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToyStore.Models", "ToyStore.Models\ToyStore.Models.csproj", "{604DABBF-627C-4475-9EC7-42A79D206536}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,5 +60,17 @@ Global
 		{D85202FB-785A-4F64-A6BA-CC669BD50D7C}.Release|x64.Build.0 = Release|Any CPU
 		{D85202FB-785A-4F64-A6BA-CC669BD50D7C}.Release|x86.ActiveCfg = Release|Any CPU
 		{D85202FB-785A-4F64-A6BA-CC669BD50D7C}.Release|x86.Build.0 = Release|Any CPU
+		{604DABBF-627C-4475-9EC7-42A79D206536}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{604DABBF-627C-4475-9EC7-42A79D206536}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{604DABBF-627C-4475-9EC7-42A79D206536}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{604DABBF-627C-4475-9EC7-42A79D206536}.Debug|x64.Build.0 = Debug|Any CPU
+		{604DABBF-627C-4475-9EC7-42A79D206536}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{604DABBF-627C-4475-9EC7-42A79D206536}.Debug|x86.Build.0 = Debug|Any CPU
+		{604DABBF-627C-4475-9EC7-42A79D206536}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{604DABBF-627C-4475-9EC7-42A79D206536}.Release|Any CPU.Build.0 = Release|Any CPU
+		{604DABBF-627C-4475-9EC7-42A79D206536}.Release|x64.ActiveCfg = Release|Any CPU
+		{604DABBF-627C-4475-9EC7-42A79D206536}.Release|x64.Build.0 = Release|Any CPU
+		{604DABBF-627C-4475-9EC7-42A79D206536}.Release|x86.ActiveCfg = Release|Any CPU
+		{604DABBF-627C-4475-9EC7-42A79D206536}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

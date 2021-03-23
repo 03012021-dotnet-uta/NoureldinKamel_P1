@@ -1,4 +1,7 @@
-namespace ToyStore.Business.Interfaces
+using System.Collections.Generic;
+using ToyStore.Models.DBModels;
+
+namespace ToyStore.Models.Interfaces
 {
     /// <summary>
     /// A Sellable can be added by a customer to an order
@@ -12,5 +15,7 @@ namespace ToyStore.Business.Interfaces
         string SellableDescription { get; set; }
         /// <value>SellablePrice: the price of the item to sell</value>
         double SellablePrice { get; set; }
+
+        List<Tag> TagList { get; set; }
     }
 }

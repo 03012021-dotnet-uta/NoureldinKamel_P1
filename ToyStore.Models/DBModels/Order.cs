@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using ToyStore.Business.Interfaces;
+using ToyStore.Models.Interfaces;
 
-namespace ToyStore.Business.Models
+namespace ToyStore.Models.DBModels
 {
     /// <summary>
     /// The order that a customer chooses
