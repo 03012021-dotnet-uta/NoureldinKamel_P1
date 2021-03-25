@@ -42,5 +42,12 @@ namespace ToyStore.Models.DBModels
         /// </summary>
         /// <value></value>
         public DateTime OrderDate { get; set; }
+
+        /// <summary>
+        /// setting a double relationship to make navigation of database
+        /// easier.
+        /// </summary>
+        /// <value></value>
+        public Customer OrderedBy { get; set; }
     }
 }

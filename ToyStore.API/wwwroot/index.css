@@ -19,6 +19,10 @@ h2 {
   font-size: 23pt;
 }
 
+.white-text {
+  color: white;
+}
+
 .section {
   padding: 2vh 5vw;
 }
@@ -35,29 +39,53 @@ h2 {
 }
 
 .toy-card {
-  height: 150px;
+  height: 300px;
   background-color: darkcyan;
   display: inline-block;
-  width: 120px;
-  margin: 0;
+  width: 200px;
+  margin: 5pt;
   border: 0;
   border-radius: 5pt;
   overflow: hidden;
+  line-height: 1.1;
+  cursor: pointer;
+}
+
+.toy-card:hover {
+  background-color: tomato;
+  transition: 0.5s;
 }
 
 .card-img-container {
-  width: 120px;
+  width: 200px;
   display: inline-block;
   background-color: darkcyan;
-  height: 70px;
+  height: 120px;
   overflow: hidden;
   position: relative;
 }
 
 .card-img-container > img {
-  width: 120px;
+  width: 200px;
   margin: auto 0;
   position: absolute;
   top: -9999px;
   bottom: -9999px;
+}
+
+.tag {
+  display: inline-block;
+  background-color: white;
+  border-radius: 5pt;
+  line-height: 1.1;
+  margin-left: 5pt;
+  padding: 3pt 2pt;
+}
+
+.card-info-div {
+  padding: 5pt;
+}
+
+.deleted {
+  text-decoration: line-through;
 }
