@@ -31,6 +31,15 @@ namespace ToyStore.Business.Logic
             return sellableStacks;
         }
 
+        public int TestMethod(int i)
+        {
+            i = i + 1;
+            i = i + 1;
+            i = i + 1;
+            i = i + 1;
+            return i;
+        }
+
         public string SerializeSellableStackList(List<SellableStack> sellableStackList)
         {
 
