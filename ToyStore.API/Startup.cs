@@ -7,11 +7,15 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using ToyStore.Business.Logic;
+using ToyStore.Models.DBModels;
+using ToyStore.Repository.Models;
 
 namespace ToyStore.API
 {
@@ -27,12 +31,23 @@ namespace ToyStore.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // todo: ask how to fix the import here
+            string connectionString = Configuration.GetConnectionString("ToysDb");
+            services.AddDbContext<DbContextClass>(options =>
+            {
+                options.UseSqlServer(connectionString);
+            });
+
+            // todo: add scoped stuff here
+            services.AddScoped<SellableLogic>();
+            services.AddScoped<ToyRepository>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ToyStore.API", Version = "v1" });
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,11 +69,6 @@ namespace ToyStore.API
             app.UseRewriter(new RewriteOptions()
                 .AddRedirect("^$", "index.html"));
 
-            // app.UseDefaultFiles(new DefaultFilesOptions
-            // {
-            //     DefaultFileNames = new
-            //     List<string> { "index.html" }
-            // });
             app.UseStaticFiles();
 
             app.UseRouting();

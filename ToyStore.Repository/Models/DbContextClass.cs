@@ -1,13 +1,20 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using ToyStore.Models.DBModels;
-using ToyStore.Models.Interfaces;
+using ToyStore.Models.Abstracts;
 
-namespace PizzaBox.Domain.Models
+namespace ToyStore.Repository.Models
 {
     //todo: change protection level
-    internal class DbContextClass : DbContext
+    public class DbContextClass : DbContext
     {
+        public DbContextClass() : base()
+        {
+
+        }
+        public DbContextClass(DbContextOptions<DbContextClass> options) : base()
+        {
+        }
 
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Sellable> Sellables { get; set; }

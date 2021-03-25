@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
 
 namespace ToyStore.Models.DBModels
@@ -9,6 +10,13 @@ namespace ToyStore.Models.DBModels
     /// </summary>
     public class Customer
     {
+        /// <summary>
+        /// The Id that identifies a customer
+        /// </summary>
+        /// <returns></returns>
+        [Key]
+        public Guid CustomerId { get; set; } = new Guid();
+
         /// <summary>
         /// First name of the customer
         /// </summary>
@@ -41,6 +49,13 @@ namespace ToyStore.Models.DBModels
         /// <value></value>
         public List<Order> FinishedOrders { get; set; }
 
+        /// <summary>
+        /// The current order of a customer.
+        /// This represents the cart and the items in the customer's cart
+        /// </summary>
+        /// <value></value>
+        public Order CurrentOrder { get; set; }
+
         private int MIN_PASS_LENGTH = 8;
 
         public bool SetPass(string password)
@@ -56,6 +71,24 @@ namespace ToyStore.Models.DBModels
             return true;
         }
 
+        /// <summary>
+        /// compare the current customer password
+        /// to the entered password in pure visible string
+        /// </summary>
+        /// <param name="enteredPass"></param>
+        /// <returns>true if matching</returns>
+        public bool ComparePasswords(string enteredPass)
+        {
+            return new PasswordHasher().ComparePass(this.CustomerPass, enteredPass);
+        }
+
+        /// <summary>
+        /// compare a hashed password to another password in pure
+        /// visible string
+        /// </summary>
+        /// <param name="rawPass"></param>
+        /// <param name="entered"></param>
+        /// <returns>true if matching</returns>
         public static bool ComparePasswords(string rawPass, string entered)
         {
             return new PasswordHasher().ComparePass(rawPass, entered);
@@ -64,6 +97,12 @@ namespace ToyStore.Models.DBModels
 
     class PasswordHasher
     {
+        /// <summary>
+        /// Hash the entered password that is in visible string
+        /// to a hashed version ready to store in db
+        /// </summary>
+        /// <param name="pass"></param>
+        /// <returns>hashed password</returns>
         public string Hash(string pass)
         {
             // STEP 1 Create the salt value with a cryptographic PRNG:
@@ -83,11 +122,20 @@ namespace ToyStore.Models.DBModels
             return Convert.ToBase64String(hashBytes);
         }
 
-        public bool ComparePass(string rawSaved, string entered)
+        /// <summary>
+        /// compare a saved hashed password with another
+        /// just entered in pure visible string
+        /// method hashes the entered pass and 
+        /// compares it with the saved hashed passwords
+        /// </summary>
+        /// <param name="savedHash"></param>
+        /// <param name="entered"></param>
+        /// <returns>true if matching</returns>
+        public bool ComparePass(string savedHash, string entered)
         {
             /* Extract the bytes */
             // Console.WriteLine("saved: " + rawSaved);
-            byte[] hashBytes = Convert.FromBase64String(rawSaved);
+            byte[] hashBytes = Convert.FromBase64String(savedHash);
             // lock (hashBytes) ;
             /* Get the salt */
             byte[] salt = new byte[16];

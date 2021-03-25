@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ToyStore.Models\ToyStore.Models.csproj" />
+    <ProjectReference Include="..\ToyStore.Repository\ToyStore.Repository.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

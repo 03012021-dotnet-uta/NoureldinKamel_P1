@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
-using ToyStore.Models.Interfaces;
+using System.ComponentModel.DataAnnotations;
+using ToyStore.Models.Abstracts;
 
 namespace ToyStore.Models.DBModels
 {
@@ -10,29 +12,10 @@ namespace ToyStore.Models.DBModels
     public class Offer : Sellable
     {
         /// <summary>
-        /// The name of the offer
-        /// </summary>
-        /// <value></value>
-        public string SellableName { get; set; }
-
-        /// <summary>
-        /// The total price of the offer
-        /// </summary>
-        /// <value></value>
-        public double SellablePrice { get; set; }
-
-        /// <summary>
-        /// The products that are included in the offer
+        /// The list of products included in this offer
         /// </summary>
         /// <value></value>
         public List<Product> Products { get; set; }
-
-        /// <summary>
-        /// The long description describing the offer
-        /// </summary>
-        /// <value></value>
-        public string SellableDescription { get; set; }
-        public List<Tag> TagList { get; set; }
 
         public override bool Equals(object obj)
         {

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ToyStore.Business.Logic;
+using ToyStore.Models.DBModels;
 
 namespace ToyStore.API.Controllers
 {
@@ -18,18 +21,55 @@ namespace ToyStore.API.Controllers
     public class ToyController : ControllerBase
     {
 
-        private readonly ILogger<ToyController> _logger;
+        // private readonly ILogger<ToyController> _logger;
 
-        public ToyController(ILogger<ToyController> logger)
+        // public ToyController(ILogger<ToyController> logger)
+        // {
+        //     _logger = logger;
+        // }
+        private readonly SellableLogic sellableLogic;
+
+        public ToyController(SellableLogic sellableLogic)
         {
-            _logger = logger;
+            this.sellableLogic = sellableLogic;
         }
 
+        // [HttpGet]
+        // // public IEnumerable<WeatherForecast> Get()
+        // public IEnumerable<string> Get()
+        // {
+        //     return new string[] { "hehe", "xd" };
+        // }
+
+
+        // public void Initialize(HttpControllerSettings controllerSettings, HttpControllerDescriptor controllerDescriptor)
+        // {
+        //     var formatter = controllerSettings.Formatters.JsonFormatter;
+
+        //     controllerSettings.Formatters.Remove(formatter);
+
+        //     formatter = new JsonMediaTypeFormatter
+        //     {
+        //         SerializerSettings =
+        //     {
+        //         ContractResolver = new CamelCasePropertyNamesContractResolver()
+        //     }
+        //     };
+
+        //     controllerSettings.Formatters.Insert(0, formatter);
+        // }
         [HttpGet]
-        // public IEnumerable<WeatherForecast> Get()
-        public IEnumerable<string> Get()
+        public string Get()
         {
-            return new string[] { "hehe", "xd" };
+            // var options = new JsonSerializerOptions
+            // {
+            //     WriteIndented = true
+            // };
+            // var sellableStacks = sellableLogic.GetAllSellables();
+            // var jsonString = JsonSerializer.Serialize(sellableStacks, options);
+            // Console.WriteLine("json: " + jsonString);
+            var jsonString = sellableLogic.SerializeSellableStackList(sellableLogic.GetAllSellables());
+            return jsonString;
         }
     }
 }
