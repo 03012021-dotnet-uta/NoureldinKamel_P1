@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Cryptography;
 
 namespace ToyStore.Models.DBModels
@@ -47,6 +48,7 @@ namespace ToyStore.Models.DBModels
         /// by the customer
         /// </summary>
         /// <value></value>
+        [InverseProperty("OrderedBy")]
         public List<Order> FinishedOrders { get; set; }
 
         /// <summary>

@@ -68,6 +68,7 @@ namespace ToyStore.API.Controllers
             // var sellableStacks = sellableLogic.GetAllSellables();
             // var jsonString = JsonSerializer.Serialize(sellableStacks, options);
             // Console.WriteLine("json: " + jsonString);
+            // sellableLogic.seedDB();
             var jsonString = sellableLogic.SerializeSellableStackList(sellableLogic.GetAllSellables());
             return jsonString;
         }

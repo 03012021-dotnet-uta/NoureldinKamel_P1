@@ -67,11 +67,11 @@ namespace ToyStore.Business.Logic
                         serialized += GetJsonProperty(5, "SellablePrice", product.SellablePrice.ToString(), vQuotations: false);
                         serialized += GetJsonProperty(5, "SellableImagePath", product.SellableImagePath);
                         serialized += "     \"TagList\": [\n";
-                        int tagCounter = product.TagList.Count - 1;
-                        product.TagList.ForEach(tag =>
+                        int tagCounter = product.SellableTags.Count - 1;
+                        product.SellableTags.ForEach(tag =>
                         {
                             serialized += "      {\n";
-                            serialized += GetJsonProperty(7, "TagName", tag.TagName, comma: false);
+                            serialized += GetJsonProperty(7, "TagName", tag.TagType.TagName, comma: false);
                             serialized += "      }";
                             if (tagCounter <= 0)
                             {
@@ -99,11 +99,11 @@ namespace ToyStore.Business.Logic
                     serialized += "   ],\n";
                 }
                 serialized += "   \"TagList\": [\n";
-                int tagCounter = sellableStack.Item.TagList.Count - 1;
-                sellableStack.Item.TagList.ForEach(tag =>
+                int tagCounter = sellableStack.Item.SellableTags.Count - 1;
+                sellableStack.Item.SellableTags.ForEach(tag =>
                 {
                     serialized += "    {\n";
-                    serialized += GetJsonProperty(5, "TagName", tag.TagName, comma: false);
+                    serialized += GetJsonProperty(5, "TagName", tag.TagType.TagName, comma: false);
                     serialized += "    }";
                     if (tagCounter <= 0)
                     {
@@ -168,6 +168,11 @@ namespace ToyStore.Business.Logic
                 stringProp += "\n";
             }
             return stringProp;
+        }
+
+        public void seedDB()
+        {
+            toyRepository.SeedDB();
         }
     }
 }

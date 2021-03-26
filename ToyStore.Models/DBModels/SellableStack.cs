@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using ToyStore.Models.Abstracts;
 
 namespace ToyStore.Models.DBModels
@@ -16,6 +17,7 @@ namespace ToyStore.Models.DBModels
         /// The Id of the Sellable stack that uniquely identifies it.
         /// </summary>
         /// <returns></returns>
+        [Key]
         public Guid SellableStackId { get; set; } = new Guid();
 
         /// <summary>
@@ -30,9 +32,9 @@ namespace ToyStore.Models.DBModels
         /// <value></value>
         public int Count { get; set; }
 
-        public List<Tag> GetTags()
+        public List<SellableTag> GetTags()
         {
-            return Item.TagList;
+            return Item.SellableTags;
         }
     }
 }

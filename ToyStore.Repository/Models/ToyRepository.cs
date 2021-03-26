@@ -248,105 +248,112 @@ namespace ToyStore.Repository.Models
         public List<SellableStack> GetAllSellableItems()
         {
             List<SellableStack> stackList = new List<SellableStack>();
-            // using (var db = new DbContextClass())
-            // {
-            //     var locationList = db.Locations.Include(l => l.LocationInventory).ToList();
-            //     locationList.ForEach(location =>
-            //     {
-            //         if (location.LocationInventory != null && location.LocationInventory.Count < 0)
-            //         {
-            //             stackList.AddRange(location.LocationInventory);
-            //         }
-            //     });
-            // }
-            // return stackList;
-            return new List<SellableStack>()
+            using (var db = new DbContextClass())
             {
-                new SellableStack()
+                var locationList = db.Locations
+                    .Include(l => l.LocationInventory)
+                    .ThenInclude(stack => stack.Item)
+                    .ThenInclude(s => s.SellableTags)
+                    .ThenInclude(st => st.TagType)
+                    .ToList();
+                locationList.ForEach(location =>
                 {
-                    Item  = new Product()
+                    Console.WriteLine("test" + location.LocationName);
+                    if (location.LocationInventory != null && location.LocationInventory.Count > 0)
                     {
-                        SellableName = "Toy1",
-                        SellablePrice = 20,
-                        SellableImagePath = @"https://media.istockphoto.com/photos/brown-teddy-bear-isolated-in-front-of-a-white-background-picture-id909772478?k=6&m=909772478&s=612x612&w=0&h=X55jzpsKboa_jUjbEN8eqAn0gjt696ldbeJMEqmNrcU=",
-                        TagList = new List<Tag>()
-                        {
-                            new Tag()
-                            {
-                                TagName = "Magnet"
-                            }
-                        }
-                    },
-                    Count = 2
-                },
-                new SellableStack()
-                {
-                    Item  = new Product()
-                    {
-                        SellableName = "Toy2",
-                        SellablePrice = 18,
-                        SellableImagePath = @"https://media.istockphoto.com/photos/brown-teddy-bear-isolated-in-front-of-a-white-background-picture-id909772478?k=6&m=909772478&s=612x612&w=0&h=X55jzpsKboa_jUjbEN8eqAn0gjt696ldbeJMEqmNrcU=",
-                        TagList = new List<Tag>()
-                        {
-                            new Tag()
-                            {
-                                TagName = "Doll"
-                            }
-                        }
-                    },
-                    Count = 4
-                },
-                new SellableStack()
-                {
-                    Item  = new Offer()
-                    {
-                        SellableName = "toy1+toy2",
-                        SellablePrice = 30,
-                        SellableImagePath = @"https://media.istockphoto.com/photos/brown-teddy-bear-isolated-in-front-of-a-white-background-picture-id909772478?k=6&m=909772478&s=612x612&w=0&h=X55jzpsKboa_jUjbEN8eqAn0gjt696ldbeJMEqmNrcU=",
-                        Products = new List<Product>()
-                        {
-                            new Product()
-                            {
-                                SellableName = "Toy1",
-                                SellablePrice = 20,
-                                SellableImagePath = @"https://media.istockphoto.com/photos/brown-teddy-bear-isolated-in-front-of-a-white-background-picture-id909772478?k=6&m=909772478&s=612x612&w=0&h=X55jzpsKboa_jUjbEN8eqAn0gjt696ldbeJMEqmNrcU=",
-                                TagList = new List<Tag>()
-                                {
-                                    new Tag()
-                                    {
-                                        TagName = "Magnet"
-                                    }
-                                }
-                            },
-                            new Product()
-                            {
-                                SellableName = "Toy2",
-                                SellablePrice = 18,
-                                SellableImagePath = @"https://media.istockphoto.com/photos/brown-teddy-bear-isolated-in-front-of-a-white-background-picture-id909772478?k=6&m=909772478&s=612x612&w=0&h=X55jzpsKboa_jUjbEN8eqAn0gjt696ldbeJMEqmNrcU=",
-                                TagList = new List<Tag>()
-                                {
-                                    new Tag()
-                                    {
-                                        TagName = "Doll"
-                                    }
-                                }
-                            }
-                        },
-                        TagList = new List<Tag>()
-                        {
-                            new Tag()
-                            {
-                                TagName = "Doll"
-                            },
-                            new Tag()
-                            {
-                                TagName = "Magnet"
-                            }
-                        },
-                    },
-                    Count = 4,
-                }
-            };
+                        Console.WriteLine("test" + "not null");
+                        stackList.AddRange(location.LocationInventory);
+                    }
+                });
+            }
+            return stackList;
+            // return new List<SellableStack>()
+            // {
+            //     new SellableStack()
+            //     {
+            //         Item  = new Product()
+            //         {
+            //             SellableName = "Toy1",
+            //             SellablePrice = 20,
+            //             SellableImagePath = @"https://media.istockphoto.com/photos/brown-teddy-bear-isolated-in-front-of-a-white-background-picture-id909772478?k=6&m=909772478&s=612x612&w=0&h=X55jzpsKboa_jUjbEN8eqAn0gjt696ldbeJMEqmNrcU=",
+            //             TagList = new List<Tag>()
+            //             {
+            //                 new Tag()
+            //                 {
+            //                     TagName = "Magnet"
+            //                 }
+            //             }
+            //         },
+            //         Count = 2
+            //     },
+            //     new SellableStack()
+            //     {
+            //         Item  = new Product()
+            //         {
+            //             SellableName = "Toy2",
+            //             SellablePrice = 18,
+            //             SellableImagePath = @"https://assets.ajio.com/medias/sys_master/root/h73/h6b/15562768613406/-473Wx593H-4914911360-multi-MODEL.jpg",
+            //             TagList = new List<Tag>()
+            //             {
+            //                 new Tag()
+            //                 {
+            //                     TagName = "Doll"
+            //                 }
+            //             }
+            //         },
+            //         Count = 4
+            //     },
+            //     new SellableStack()
+            //     {
+            //         Item  = new Offer()
+            //         {
+            //             SellableName = "toy1+toy2",
+            //             SellablePrice = 30,
+            //             SellableImagePath = @"https://media.istockphoto.com/photos/brown-teddy-bear-isolated-in-front-of-a-white-background-picture-id909772478?k=6&m=909772478&s=612x612&w=0&h=X55jzpsKboa_jUjbEN8eqAn0gjt696ldbeJMEqmNrcU=",
+            //             Products = new List<Product>()
+            //             {
+            //                 new Product()
+            //                 {
+            //                     SellableName = "Toy1",
+            //                     SellablePrice = 20,
+            //                     SellableImagePath = @"https://media.istockphoto.com/photos/brown-teddy-bear-isolated-in-front-of-a-white-background-picture-id909772478?k=6&m=909772478&s=612x612&w=0&h=X55jzpsKboa_jUjbEN8eqAn0gjt696ldbeJMEqmNrcU=",
+            //                     TagList = new List<Tag>()
+            //                     {
+            //                         new Tag()
+            //                         {
+            //                             TagName = "Magnet"
+            //                         }
+            //                     }
+            //                 },
+            //                 new Product()
+            //                 {
+            //                     SellableName = "Toy2",
+            //                     SellablePrice = 18,
+            //                     SellableImagePath = @"https://media.istockphoto.com/photos/brown-teddy-bear-isolated-in-front-of-a-white-background-picture-id909772478?k=6&m=909772478&s=612x612&w=0&h=X55jzpsKboa_jUjbEN8eqAn0gjt696ldbeJMEqmNrcU=",
+            //                     TagList = new List<Tag>()
+            //                     {
+            //                         new Tag()
+            //                         {
+            //                             TagName = "Doll"
+            //                         }
+            //                     }
+            //                 }
+            //             },
+            //             TagList = new List<Tag>()
+            //             {
+            //                 new Tag()
+            //                 {
+            //                     TagName = "Doll"
+            //                 },
+            //                 new Tag()
+            //                 {
+            //                     TagName = "Magnet"
+            //                 }
+            //             },
+            //         },
+            //         Count = 4,
+            //     }
+            // };
         }
 
         public HashSet<Tag> GetAvailableTags()
@@ -366,7 +373,7 @@ namespace ToyStore.Repository.Models
                     {
                         ts.ForEach(tag =>
                         {
-                            tagSet.Add(tag);
+                            tagSet.Add(tag.TagType);
                         });
                     }
                 });
@@ -380,7 +387,7 @@ namespace ToyStore.Repository.Models
             var allSellableStacks = GetAllSellableItems();
             if (allSellableStacks != null && allSellableStacks.Count != 0)
             {
-                tagSellables = allSellableStacks.Where(stack => stack.GetTags().Any(t => t.TagName == neededTag.TagName)).ToList();
+                tagSellables = allSellableStacks.Where(stack => stack.GetTags().Any(t => t.TagType.TagName == neededTag.TagName)).ToList();
             }
             else
             {
@@ -392,6 +399,169 @@ namespace ToyStore.Repository.Models
         private static void PrintError(Exception e)
         {
             Console.WriteLine("error: " + e.Message + "\n" + e.StackTrace);
+        }
+
+        public void SeedDB()
+        {
+            var t1 = new Tag()
+            {
+                TagName = "FluffyDoll"
+            };
+            var t2 = new Tag()
+            {
+                TagName = "Doll"
+            };
+            var t3 = new Tag()
+            {
+                TagName = "Magnetic"
+            };
+            var p1 = new Product()
+            {
+                SellableId = Guid.NewGuid(),
+                SellableName = "TeddyBear",
+                SellablePrice = 20,
+                SellableDescription = "A Sweet Lovely Teddy Bear",
+                SellableImagePath = @"https://media.istockphoto.com/photos/brown-teddy-bear-isolated-in-front-of-a-white-background-picture-id909772478?k=6&m=909772478&s=612x612&w=0&h=X55jzpsKboa_jUjbEN8eqAn0gjt696ldbeJMEqmNrcU=",
+            };
+            var p2 = new Product()
+            {
+                SellableId = Guid.NewGuid(),
+                SellableName = "Barbey Doll",
+                SellablePrice = 18,
+                SellableDescription = "A Sweet Barbey Doll",
+                SellableImagePath = @"https://assets.ajio.com/medias/sys_master/root/h73/h6b/15562768613406/-473Wx593H-4914911360-multi-MODEL.jpg",
+            };
+            var p3 = new Product()
+            {
+                SellableId = Guid.NewGuid(),
+                SellableName = "Magnetic Game",
+                SellablePrice = 25,
+                SellableDescription = "A Creative tool for your child to experiment with",
+                SellableImagePath = @"https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/M_tic.jpg/220px-M_tic.jpg",
+            };
+            var st1_1 = new SellableTag()
+            {
+                SellableItem = p1,
+                TagType = t1,
+            };
+            var st1_2 = new SellableTag()
+            {
+                SellableItem = p1,
+                TagType = t2,
+            };
+            p1.SellableTags = new List<SellableTag>() { st1_1, st1_2 };
+            var st2_2 = new SellableTag()
+            {
+                SellableItem = p2,
+                TagType = t2,
+            };
+            p2.SellableTags = new List<SellableTag>() { st2_2 };
+            var st3_3 = new SellableTag()
+            {
+                SellableItem = p3,
+                TagType = t3,
+            };
+            p3.SellableTags = new List<SellableTag>() { st3_3 };
+
+            var s1 = new SellableStack()
+            {
+                SellableStackId = Guid.NewGuid(),
+                Item = p1,
+                Count = 2
+            };
+            var s2 = new SellableStack()
+            {
+                SellableStackId = Guid.NewGuid(),
+                Item = p2,
+                Count = 4
+            };
+            var s4 = new SellableStack()
+            {
+                SellableStackId = Guid.NewGuid(),
+                Item = p3,
+                Count = 9
+            };
+            var o1 = new Offer()
+            {
+                SellableId = Guid.NewGuid(),
+                SellableName = "toy1+toy2",
+                SellablePrice = 30,
+                SellableImagePath = @"https://media.istockphoto.com/photos/brown-teddy-bear-isolated-in-front-of-a-white-background-picture-id909772478?k=6&m=909772478&s=612x612&w=0&h=X55jzpsKboa_jUjbEN8eqAn0gjt696ldbeJMEqmNrcU=",
+                Products = new List<Product>()
+                {
+                    p1,
+                    p2
+                },
+            };
+            var ot1_1 = new SellableTag()
+            {
+                SellableItem = o1,
+                TagType = t1,
+            };
+            var ot1_2 = new SellableTag()
+            {
+                SellableItem = o1,
+                TagType = t2,
+            };
+            o1.SellableTags = new List<SellableTag>() { ot1_1, ot1_2 };
+
+            var s3 = new SellableStack()
+            {
+                SellableStackId = Guid.NewGuid(),
+                Item = o1,
+                Count = 4,
+            };
+            // using (var db = new DbContextClass())
+            // {
+            //     db.SellableStacks.Add(s1);
+            //     db.SellableStacks.Add(s2);
+            //     db.SellableStacks.Add(s3);
+            //     db.SellableStacks.Add(s4);
+            //     db.SaveChanges();
+            // }
+
+            // var stacks = new List<SellableStack>();
+            // using (var db = new DbContextClass())
+            // {
+            //     stacks = db.SellableStacks.ToList();
+            // }
+
+            // var l1 = new Location()
+            // {
+            //     LocationId = Guid.NewGuid(),
+            //     LocationName = "NewYork Store",
+            //     // LocationInventory = new HashSet<SellableStack>() { stacks[3], stacks[1] }
+            // };
+            // var l2 = new Location()
+            // {
+            //     LocationId = Guid.NewGuid(),
+            //     LocationName = "Chicago Store",
+            //     // LocationInventory = new HashSet<SellableStack>() { stacks[2], stacks[0] }
+            // };
+            // using (var db = new DbContextClass())
+            // {
+            //     db.Locations.Add(l1);
+            //     db.Locations.Add(l2);
+            //     db.SaveChanges();
+            // }
+
+            // using (var db = new DbContextClass())
+            // {
+            //     var stores = db.Locations.ToList();
+            //     stores[0].LocationInventory = new HashSet<SellableStack>();
+            //     stores[0].LocationInventory.Add(stacks[0]);
+            //     stores[0].LocationInventory.Add(stacks[2]);
+            //     db.SaveChanges();
+            // }
+
+            // using (var db = new DbContextClass())
+            // {
+            //     var stores = db.Locations.ToList();
+            //     stores[1].LocationInventory = new HashSet<SellableStack>();
+            //     stores[1].LocationInventory.Add(stacks[1]);
+            //     stores[1].LocationInventory.Add(stacks[3]);
+            //     db.SaveChanges();
+            // }
         }
 
 

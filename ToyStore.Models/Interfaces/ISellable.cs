@@ -26,16 +26,17 @@ namespace ToyStore.Models.Interfaces
         double SellablePrice { get; set; }
 
         /// <summary>
-        /// The tag list that this sellable item belongs to
-        /// </summary>
-        /// <value></value>
-        List<Tag> TagList { get; set; }
-
-        /// <summary>
         /// The path for the image to display for the 
         /// sellable item
         /// </summary>
         /// <value></value>
         string SellableImagePath { get; set; }
+
+        /// <summary>
+        /// The SellableTag list that this sellable item belongs to this Item. <br/>
+        /// The Sellable Tag object is a junction entity that connects this item to a tag.
+        /// </summary>
+        /// <value></value>
+        public List<SellableTag> SellableTags { get; set; }
     }
 }

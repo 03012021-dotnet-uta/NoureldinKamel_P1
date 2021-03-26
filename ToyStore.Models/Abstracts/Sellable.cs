@@ -29,10 +29,11 @@ namespace ToyStore.Models.Abstracts
         public double SellablePrice { get; set; }
 
         /// <summary>
-        /// The tag list that this sellable item belongs to
+        /// The SellableTag list that this sellable item belongs to this Item. <br/>
+        /// The Sellable Tag object is a junction entity that connects this item to a tag.
         /// </summary>
         /// <value></value>
-        public List<Tag> TagList { get; set; }
+        public List<SellableTag> SellableTags { get; set; }
 
         /// <summary>
         /// The path for the image to display for the 
