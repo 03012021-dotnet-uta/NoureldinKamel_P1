@@ -31,11 +31,26 @@ h2 {
   border-radius: 5pt;
 }
 
+.horizontal-slider {
+  width: 100%;
+  overflow-x: scroll;
+}
+
+.horizontal-slider::-webkit-scrollbar {
+  height: 10px;
+  /* background-color: white; */
+}
+.horizontal-slider::-webkit-scrollbar-thumb {
+  height: 10px;
+  background-color: darkcyan;
+}
+
 .product-carousel {
   /* background-color: white; */
   /* padding: 5px; */
   border: 0;
-  line-height: 0.5;
+  /* line-height: 0.5; */
+  white-space: nowrap;
 }
 
 .toy-card {
@@ -49,6 +64,7 @@ h2 {
   overflow: hidden;
   line-height: 1.1;
   cursor: pointer;
+  white-space: normal;
 }
 
 .toy-card:hover {

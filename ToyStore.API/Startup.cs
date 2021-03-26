@@ -47,6 +47,10 @@ namespace ToyStore.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ToyStore.API", Version = "v1" });
             });
+            // services.AddControllersWithViews()
+            //     .AddNewtonsoftJson(options =>
+            //     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            // );
 
         }
 
@@ -67,7 +71,7 @@ namespace ToyStore.API
             // app.UseRewriter(new Microsoft.AspNetCore.Rewrite.RewriteOptions())
 
             app.UseRewriter(new RewriteOptions()
-                .AddRedirect("^$", "index.html"));
+                .AddRedirect("^$", "toydetail/toydetail.html"));
 
             app.UseStaticFiles();
 

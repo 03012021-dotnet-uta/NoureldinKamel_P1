@@ -15,7 +15,7 @@ namespace ToyStore.Models.DBModels
         /// The list of products included in this offer
         /// </summary>
         /// <value></value>
-        public List<Product> Products { get; set; }
+        // public List<Product> Products { get; set; }
 
         public override bool Equals(object obj)
         {

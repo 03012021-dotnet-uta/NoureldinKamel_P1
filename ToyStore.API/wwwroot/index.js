@@ -1,13 +1,20 @@
-'use-strict';
+"use-strict";
 console.log("js working");
 
 // fetch("api/WeatherForecast")
 fetch("api/toy")
-    .then(response => response.json())
-    .then(textjson => {
-        console.log(textjson);
-        DisplayStackList(textjson);
-    })
+  .then((response) => response.json())
+  .then((textjson) => {
+    console.log(textjson);
+    DisplayStackList(textjson);
+    DisplayOfferList();
+  });
+
+fetch("api/toy/tags")
+  .then((response) => response.json())
+  .then((textjson) => {
+    console.log(textjson);
+  });
 // .catch(error => {
 //     console.log(error);
 // });
@@ -21,100 +28,158 @@ fetch("api/toy")
 //         DisplayStackList(textjson);
 //     })
 
+var offerList = Array();
+
 function DisplayStackList(stackList) {
+  let cardDiv = null;
+  let imgDiv = null;
+  let infoDiv = null;
+  let tagDiv = null;
+  let img = null;
+  let span = null;
+  let stack = null;
 
-    //   <div class="toy-card round-border">
-    //     <div class="card-img-container">
-    //       <img
-    //         src="https://media.istockphoto.com/photos/brown-teddy-bear-isolated-in-front-of-a-white-background-picture-id909772478?k=6&m=909772478&s=612x612&w=0&h=X55jzpsKboa_jUjbEN8eqAn0gjt696ldbeJMEqmNrcU="
-    //         alt=""
-    //       />
-    //     </div>
-    //   </div>
+  let toyCarouselDiv = document.getElementById("toys");
 
-    let cardDiv = null;
-    let imgDiv = null;
-    let infoDiv = null;
-    let tagDiv = null;
-    let img = null;
-    let span = null;
+  for (let i = 0; i < stackList.length; i++) {
+    stack = stackList[i];
+    ({ cardDiv, imgDiv, tagDiv, infoDiv, img } = createMainDivs());
 
-    let stack = null;
-
-    let toyCarouselDiv = document.getElementById("toys");
-
-    for (let i = 0; i < stackList.length; i++) {
-        stack = stackList[i];
-
-        cardDiv = createDivwClass("toy-card round-border");
-        imgDiv = createDivwClass("card-img-container");
-        tagDiv = createDivwClass("card-info-div");
-        infoDiv = createDivwClass("card-info-div");
-        img = document.createElement("img");
-
-        toyCarouselDiv.appendChild(cardDiv);
-        cardDiv.appendChild(imgDiv);
-        cardDiv.appendChild(infoDiv);
-        infoDiv.appendChild(createParagraphwClass("white-text", "Name: " + stack.Item.SellableName));
-        infoDiv.appendChild(createParagraphwClass("white-text", "Price: $" + stack.Item.SellablePrice));
-
-        // console.log(stack.Item.Products);
-        if (stack.Item.Products != undefined) {
-            console.log(stack.Item.Products[0]);
-            let saveup = 0;
-            let price = 0;
-            stack.Item.Products.forEach(sellable => {
-                price += sellable.SellablePrice;
-            });
-            saveup = price - stack.Item.SellablePrice;
-
-            let word = createSpanwClass("white-text", "Save: ")
-            let delEl = createSpanwClass("deleted white-text", "$" + saveup);
-
-            infoDiv.appendChild(word);
-            infoDiv.appendChild(delEl);
-        }
-
-        infoDiv.appendChild(createParagraphwClass("white-text", "Left in stock: " + stack.Count));
-
-
-        infoDiv.appendChild(createParagraphwClass("white-text", "Tags:"));
-        stack.Item.TagList.forEach(tag => {
-            span = createSpanwClass("tag", tag.TagName);
-            tagDiv.appendChild(span);
-        });
-
-        // for (let j = 0; j < stack.TagList.length; j++) {
-        //     const element2 = TagList[j];
-        //     span = createSpanwClass("", element2);
-        //     tagDiv.appendChild(span);
-        // }
-
-        cardDiv.appendChild(tagDiv);
-
-        img.src = stack.Item.SellableImagePath;
-        imgDiv.appendChild(img);
+    displayBeforeOfferSave(
+      toyCarouselDiv,
+      cardDiv,
+      imgDiv,
+      infoDiv,
+      stack,
+      tagDiv,
+      img
+    );
+    // console.log(stack.Item.Products);
+    if (stack.Item.Products != undefined) {
+      displayOfferProductsInDiv(stack, infoDiv);
+      offerList.push(stack);
     }
+    displayAfterOfferSave(infoDiv, stack, span, tagDiv);
+  }
+}
+
+function DisplayOfferList() {
+  stackList = offerList;
+  let cardDiv = null;
+  let imgDiv = null;
+  let infoDiv = null;
+  let tagDiv = null;
+  let img = null;
+  let span = null;
+  let stack = null;
+
+  let toyCarouselDiv = document.getElementById("offers");
+
+  for (let i = 0; i < stackList.length; i++) {
+    stack = stackList[i];
+    console.log("alo?");
+    console.log(stack);
+    ({ cardDiv, imgDiv, tagDiv, infoDiv, img } = createMainDivs());
+
+    displayBeforeOfferSave(
+      toyCarouselDiv,
+      cardDiv,
+      imgDiv,
+      infoDiv,
+      stack,
+      tagDiv,
+      img
+    );
+    // console.log(stack.Item.Products);
+    if (stack.Item.Products != undefined) {
+      displayOfferProductsInDiv(stack, infoDiv);
+    }
+    displayAfterOfferSave(infoDiv, stack, span, tagDiv);
+  }
+}
+
+function displayAfterOfferSave(infoDiv, stack, span, tagDiv) {
+  infoDiv.appendChild(
+    createParagraphwClass("white-text", "Left in stock: " + stack.Count)
+  );
+
+  infoDiv.appendChild(createParagraphwClass("white-text", "Tags:"));
+  stack.Item.TagList.forEach((tag) => {
+    span = createSpanwClass("tag", tag.TagName);
+    tagDiv.appendChild(span);
+  });
+  // return span;
+}
+
+function displayBeforeOfferSave(
+  toyCarouselDiv,
+  cardDiv,
+  imgDiv,
+  infoDiv,
+  item,
+  tagDiv,
+  img
+) {
+  toyCarouselDiv.appendChild(cardDiv);
+  cardDiv.appendChild(imgDiv);
+  cardDiv.appendChild(infoDiv);
+  infoDiv.appendChild(
+    createParagraphwClass("white-text", "Name: " + item.Item.SellableName)
+  );
+  infoDiv.appendChild(
+    createParagraphwClass("white-text", "Price: $" + item.Item.SellablePrice)
+  );
+
+  cardDiv.appendChild(tagDiv);
+
+  img.src = item.Item.SellableImagePath;
+  imgDiv.appendChild(img);
+}
+
+function createMainDivs() {
+  cardDiv = createDivwClass("toy-card round-border");
+  imgDiv = createDivwClass("card-img-container");
+  tagDiv = createDivwClass("card-info-div");
+  infoDiv = createDivwClass("card-info-div");
+  img = document.createElement("img");
+  return { cardDiv, imgDiv, tagDiv, infoDiv, img };
+}
+
+function displayOfferProductsInDiv(stack, infoDiv) {
+  let saveup = 0;
+  let price = 0;
+  stack.Item.Products.forEach((sellable) => {
+    price += sellable.SellablePrice;
+  });
+  saveup = price - stack.Item.SellablePrice;
+
+  let word = createSpanwClass("white-text", "Save: ");
+  let delEl = createSpanwClass("deleted white-text", "$" + saveup);
+
+  infoDiv.appendChild(word);
+  infoDiv.appendChild(delEl);
 }
 
 function createDivwClass(classList) {
-    let divObj = document.createElement("div");
+  let divObj = document.createElement("div");
 
-    divObj.classList = classList;
-    return divObj;
+  divObj.classList = classList;
+  return divObj;
 }
 
 function createParagraphwClass(classname, text) {
-    let p = document.createElement("p");
-    p.classList = classname;
-    p.innerHTML = text;
-    return p;
+  let p = document.createElement("p");
+  p.classList = classname;
+  p.innerHTML = text;
+  return p;
 }
 
 function createSpanwClass(classname, text) {
-    let span = document.createElement("span");
-    span.classList = classname;
-    span.innerHTML = text;
-    span.setAttribute("style", "padding-right:5pt");
-    return span;
+  let span = document.createElement("span");
+  span.classList = classname;
+  span.innerHTML = text;
+  span.setAttribute("style", "padding-right:5pt");
+  return span;
 }
+
+function showOffers() {}

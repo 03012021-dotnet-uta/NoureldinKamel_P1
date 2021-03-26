@@ -47,5 +47,22 @@ namespace ToyStore.Models.Abstracts
         /// </summary>
         /// <value></value>
         public string SellableImagePath { get; set; }
+
+        /// <summary>
+        /// A Sellable can be included in an Offer. <br/>
+        /// </summary>
+        /// <value></value>
+        public Sellable CurrentOffer { get; set; }
+
+        /// <summary>
+        /// A Sellable can have a List of many products. <br/>
+        /// </summary>
+        /// <value></value>
+        public List<Sellable> Products { get; set; }
+
+        public override string ToString()
+        {
+            return this.SellableName;
+        }
     }
 }

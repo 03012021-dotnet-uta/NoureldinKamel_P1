@@ -26,8 +26,6 @@ namespace ToyStore.Repository.Models
         }
 
         public DbSet<Customer> Customers { get; set; }
-
-        //try splitting into offers and products
         public DbSet<Sellable> Sellables { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<Order> Orders { get; set; }
@@ -37,8 +35,8 @@ namespace ToyStore.Repository.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // optionsBuilder.UseSqlServer(@"Server=.\PRODDB;Database=ToyStoreP1NNK;Trusted_Connection=True;");
-            optionsBuilder.UseSqlServer(@"Server=127.0.0.1;Database=ToyStoreP1NNK;User Id=SA;Password=1Secure*Password1;");
+            optionsBuilder.UseSqlServer(@"Server=.\PRODDB;Database=ToyStoreP1NNK;Trusted_Connection=True;");
+            // optionsBuilder.UseSqlServer(@"Server=127.0.0.1;Database=ToyStoreP1NNK;User Id=SA;Password=1Secure*Password1;");
             // optionsBuilder.UseSqlServer(Microsoft.Extensions.Configuration.IConfiguration.GetConnectionString("ToysDb"));
             // base.OnConfiguring(optionsBuilder);
         }
@@ -53,7 +51,7 @@ namespace ToyStore.Repository.Models
             // modelBuilder.Entity<School>().HasMany(s => s.Students).WithOne(s => s.School);
             // people : student => school
             // sellable : offer => sellable
-            // modelBuilder.Entity<Sellable>().HasMany(s => (s as Offer).Products).WithOne(s => s.CurrentOffer);
+            modelBuilder.Entity<Sellable>().HasMany(s => s.Products).WithOne(s => s.CurrentOffer);
             // modelBuilder.Entity<SellableTag>().HasKey(st => new { st.TagType.TagId, st.SellableItem.SellableId });
 
             base.OnModelCreating(modelBuilder);

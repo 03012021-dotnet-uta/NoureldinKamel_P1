@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ToyStore.Business.Logic;
 using ToyStore.Models.DBModels;
+using Newtonsoft.Json;
 
 namespace ToyStore.API.Controllers
 {
@@ -71,6 +72,39 @@ namespace ToyStore.API.Controllers
             // sellableLogic.seedDB();
             var jsonString = sellableLogic.SerializeSellableStackList(sellableLogic.GetAllSellables());
             return jsonString;
+        }
+
+        [HttpPost("detail")]
+        public string GetProductDetail([FromBody] object obj)
+        {
+            System.Console.WriteLine("hello?: " + obj.ToString());
+            var z = new { id = "" };
+            string k = obj.ToString().Split("\"")[3];
+            var id = new Guid(k);
+            // var x = obj.GetType().GetProperty("id");
+            // string y = (string)x.GetValue(obj, null);
+            System.Console.WriteLine("hello?: " + k);
+            // var oj = id.Property("id");
+            var nameList = sellableLogic.GetSellableById(id);
+            // var ser = Newtonsoft.Json.JsonSerializer.Create(
+            // );
+
+            return JsonConvert.SerializeObject(nameList,
+                 new Newtonsoft.Json.JsonSerializerSettings() { ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore });
+            // return nameList;
+            // return new SellableStack();
+
+        }
+        [HttpGet("tags")]
+        public List<string> GetTags()
+        {
+            var nameList = new List<String>();
+            sellableLogic.GetAvailableTags().ForEach(tag =>
+            {
+                System.Console.WriteLine(tag.TagName);
+                nameList.Add(tag.TagName);
+            });
+            return nameList;
         }
     }
 }

@@ -41,6 +41,7 @@ namespace ToyStore.Repository.Models
             return false;
         }
 
+
         public bool Register(Customer customerIn, out Customer customerOut)
         {
             customerOut = null;
@@ -196,19 +197,19 @@ namespace ToyStore.Repository.Models
         /// <returns>true if success</returns>
         public bool RemoveSellableFromOrder(Order order, Sellable sellable)
         {
-            using (var db = new DbContextClass())
-            {
-                if (!db.Orders.Contains(order))
-                {
-                    return true;
-                }
-                if (!db.Sellables.Contains(sellable))
-                {
-                    return true;
-                }
-                db.Sellables.Remove(sellable);
-                return db.SaveChanges() > 0;
-            }
+            // using (var db = new DbContextClass())
+            // {
+            //     if (!db.Orders.Contains(order))
+            //     {
+            //         return true;
+            //     }s
+            //     if (!db.Sellables.Contains(sellable))
+            //     {
+            return true;
+            //     }
+            //     db.Sellables.Remove(sellable);
+            //     return db.SaveChanges() > 0;
+            // }
         }
 
         /// <summary>
@@ -242,23 +243,23 @@ namespace ToyStore.Repository.Models
 
         /* #endregion */
 
-        private bool HasProducts(Sellable sellable)
-        {
-            try
-            {
-                using (var db = new DbContextClass())
-                {
-                    // db.Sellables.Where(s => s.SellableId == sellable.SellableId).Include();
-                }
-                Console.WriteLine("test" + "YES");
-                return true;
-            }
-            catch (System.Exception)
-            {
-                Console.WriteLine("test" + "nope");
-                return false;
-            }
-        }
+        // private bool HasProducts(Sellable sellable)
+        // {
+        //     try
+        //     {
+        //         using (var db = new DbContextClass())
+        //         {
+        //             // db.Sellables.Where(s => s.SellableId == sellable.SellableId).Include();
+        //         }
+        //         Console.WriteLine("test" + "YES");
+        //         return true;
+        //     }
+        //     catch (System.Exception)
+        //     {
+        //         Console.WriteLine("test" + "nope");
+        //         return false;
+        //     }
+        // }
 
 
         public List<SellableStack> GetAllSellableItems()
@@ -270,11 +271,12 @@ namespace ToyStore.Repository.Models
                     .Include(l => l.LocationInventory)
                     .ThenInclude(stack => stack.Item)
                     .ThenInclude(st => st.Tags)
-                    // .Include(l => l.LocationInventory.Where(stack => stack.Item.GetType() == new Offer().GetType()))
-                    // .ThenInclude(stack => stack.Item)
-                    // .ThenInclude(s => (s as Offer).Products)
+                    .Include(l => l.LocationInventory)
+                    .ThenInclude(stack => stack.Item)
+                    .ThenInclude(s => s.Products)
                     // .Include(l => l.LocationInventory)
-                    // .ThenInclude(stack => (stack.Item as Offer).Products)
+                    // .ThenInclude(stack => stack.Item)
+                    // .ThenInclude(s => s.CurrentOffer)
                     .ToList();
                 // locationList.AddRange(
                 //     db.Locations.Include(l => l.LocationInventory)
@@ -288,23 +290,44 @@ namespace ToyStore.Repository.Models
                     {
                         location.LocationInventory.ToList().ForEach(stack =>
                         {
-                            System.Console.WriteLine("test: " + stack.Item.GetType());
-                            if (stack.Item.GetType() == new Offer().GetType())
-                            {
-                                db.Entry(stack.Item).Collection(s => (s as Offer).Products).Load();
-                                Console.WriteLine("test: " + stack.Item.SellableName + " " + (stack.Item as Offer).Products[0].SellableName);
-                                // db.SellableStacks
-                                // .Where(stack => stack.SellableStackId == stack.SellableStackId)
-                                // .Include(st => st.Item)
-                                // .ThenInclude(s => (s as Offer).Products);
-                            }
+                            System.Console.WriteLine("test: " + stack.Item);
+                            // Console.WriteLine("test: " + stack.Item.SellableName + " " + stack.Item.Products[0].SellableName);
+
+                            // if (stack.Item.CurrentOffer != null)
+                            // {
+                            //     Console.WriteLine("test: offer name: " + stack.Item.CurrentOffer.SellableName);
+                            //     var o = stack.Item.CurrentOffer;
+                            //     if (!o.Products.Contains(stack.Item))
+                            //     {
+                            //         o.Products.Add(stack.Item);
+                            //         System.Console.WriteLine("test: product added: " + o.Products[0]);
+                            //     }
+                            // }
+                            stackList.Add(stack);
+                            // db.SellableStacks
+                            // .Where(stack => stack.SellableStackId == stack.SellableStackId)
+                            // .Include(st => st.Item)
+                            // .ThenInclude(s => (s as Offer).Products);
+
                         });
 
-                        Console.WriteLine("test" + "not null");
-                        stackList.AddRange(location.LocationInventory);
+                        // Console.WriteLine("test" + "not null");
+                        // stackList.AddRange(location.LocationInventory);
                     }
                 });
             }
+            stackList.ForEach(stack =>
+            {
+                System.Console.WriteLine("sellable :" + stack.Item + " has count: " + stack.Count);
+                if (stack.Item.Products != null && stack.Item.Products.Count > 0)
+                {
+                    System.Console.WriteLine("sellable :" + stack.Item + " has products");
+                    stack.Item.Products.ForEach(sellable =>
+                    {
+                        System.Console.WriteLine("test: stack: " + sellable);
+                    });
+                }
+            });
             return stackList;
             // return new List<SellableStack>()
             // {
@@ -395,6 +418,24 @@ namespace ToyStore.Repository.Models
             // };
         }
 
+        public SellableStack GetSellableByIdDb(Guid id)
+        {
+            SellableStack stack = null;
+            using (var db = new DbContextClass())
+            {
+                try
+                {
+                    stack = db.SellableStacks.Where(s => s.Item.SellableId == id).Include(stack => stack.Item).First();
+                    db.Entry(stack.Item).Collection(s => s.Products).Load();
+                }
+                catch (System.Exception e)
+                {
+                    PrintError(e);
+                }
+            }
+            return stack;
+        }
+
         public HashSet<Tag> GetAvailableTags()
         {
             var stackList = new List<SellableStack>();
@@ -444,15 +485,18 @@ namespace ToyStore.Repository.Models
         {
             var t1 = new Tag()
             {
-                TagName = "FluffyDoll"
+                TagName = "FluffyDoll",
+                TagSellables = new List<Sellable>()
             };
             var t2 = new Tag()
             {
-                TagName = "Doll"
+                TagName = "Doll",
+                TagSellables = new List<Sellable>()
             };
             var t3 = new Tag()
             {
-                TagName = "Magnetic"
+                TagName = "Magnetic",
+                TagSellables = new List<Sellable>()
             };
             var p1 = new Product()
             {
@@ -490,18 +534,22 @@ namespace ToyStore.Repository.Models
             // };
             // p1.SellableTags = new List<SellableTag>() { st1_1, st1_2 };
             p1.Tags = new List<Tag>() { t1, t2 };
+            t1.TagSellables.Add(p1);
+            t2.TagSellables.Add(p1);
             // var st2_2 = new SellableTag()
             // {
             //     SellableItem = p2,
             //     TagType = t2,
             // };
             p2.Tags = new List<Tag>() { t2 };
+            t2.TagSellables.Add(p2);
             // var st3_3 = new SellableTag()
             // {
             //     SellableItem = p3,
             //     TagType = t3,
             // };
             p3.Tags = new List<Tag>() { t3 };
+            t3.TagSellables.Add(p3);
 
             var s1 = new SellableStack()
             {
@@ -527,7 +575,7 @@ namespace ToyStore.Repository.Models
                 SellableName = "toy1+toy2",
                 SellablePrice = 30,
                 SellableImagePath = @"https://media.istockphoto.com/photos/brown-teddy-bear-isolated-in-front-of-a-white-background-picture-id909772478?k=6&m=909772478&s=612x612&w=0&h=X55jzpsKboa_jUjbEN8eqAn0gjt696ldbeJMEqmNrcU=",
-                Products = new List<Product>()
+                Products = new List<Sellable>()
                 {
                     p1,
                     p2
@@ -544,64 +592,66 @@ namespace ToyStore.Repository.Models
             //     TagType = t2,
             // };
             o1.Tags = new List<Tag>() { t1, t2 };
+            t1.TagSellables.Add(o1);
+            t2.TagSellables.Add(o1);
+
 
             var s3 = new SellableStack()
             {
                 SellableStackId = Guid.NewGuid(),
                 Item = o1,
-                Count = 4,
+                Count = 5,
             };
-            // using (var db = new DbContextClass())
-            // {
-            //     db.SellableStacks.Add(s1);
-            //     db.SellableStacks.Add(s2);
-            //     db.SellableStacks.Add(s3);
-            //     db.SellableStacks.Add(s4);
-            //     db.SaveChanges();
-            // }
+            using (var db = new DbContextClass())
+            {
+                db.SellableStacks.Add(s1);
+                db.SellableStacks.Add(s2);
+                db.SellableStacks.Add(s3);
+                db.SellableStacks.Add(s4);
+                db.SaveChanges();
+            }
+            var stacks = new List<SellableStack>();
+            using (var db = new DbContextClass())
+            {
+                stacks = db.SellableStacks.ToList();
+            }
 
-            // var stacks = new List<SellableStack>();
-            // using (var db = new DbContextClass())
-            // {
-            //     stacks = db.SellableStacks.ToList();
-            // }
+            var l1 = new Location()
+            {
+                LocationId = Guid.NewGuid(),
+                LocationName = "NewYork Store",
+                // LocationInventory = new HashSet<SellableStack>() { stacks[3], stacks[1] }
+            };
+            var l2 = new Location()
+            {
+                LocationId = Guid.NewGuid(),
+                LocationName = "Chicago Store",
+                // LocationInventory = new HashSet<SellableStack>() { stacks[2], stacks[0] }
+            };
+            using (var db = new DbContextClass())
+            {
+                db.Locations.Add(l1);
+                db.Locations.Add(l2);
+                db.SaveChanges();
+            }
 
-            // var l1 = new Location()
-            // {
-            //     LocationId = Guid.NewGuid(),
-            //     LocationName = "NewYork Store",
-            //     // LocationInventory = new HashSet<SellableStack>() { stacks[3], stacks[1] }
-            // };
-            // var l2 = new Location()
-            // {
-            //     LocationId = Guid.NewGuid(),
-            //     LocationName = "Chicago Store",
-            //     // LocationInventory = new HashSet<SellableStack>() { stacks[2], stacks[0] }
-            // };
-            // using (var db = new DbContextClass())
-            // {
-            //     db.Locations.Add(l1);
-            //     db.Locations.Add(l2);
-            //     db.SaveChanges();
-            // }
+            using (var db = new DbContextClass())
+            {
+                var stores = db.Locations.ToList();
+                stores[0].LocationInventory = new HashSet<SellableStack>();
+                stores[0].LocationInventory.Add(stacks[0]);
+                stores[0].LocationInventory.Add(stacks[2]);
+                db.SaveChanges();
+            }
 
-            // using (var db = new DbContextClass())
-            // {
-            //     var stores = db.Locations.ToList();
-            //     stores[0].LocationInventory = new HashSet<SellableStack>();
-            //     stores[0].LocationInventory.Add(stacks[0]);
-            //     stores[0].LocationInventory.Add(stacks[2]);
-            //     db.SaveChanges();
-            // }
-
-            // using (var db = new DbContextClass())
-            // {
-            //     var stores = db.Locations.ToList();
-            //     stores[1].LocationInventory = new HashSet<SellableStack>();
-            //     stores[1].LocationInventory.Add(stacks[1]);
-            //     stores[1].LocationInventory.Add(stacks[3]);
-            //     db.SaveChanges();
-            // }
+            using (var db = new DbContextClass())
+            {
+                var stores = db.Locations.ToList();
+                stores[1].LocationInventory = new HashSet<SellableStack>();
+                stores[1].LocationInventory.Add(stacks[1]);
+                stores[1].LocationInventory.Add(stacks[3]);
+                db.SaveChanges();
+            }
         }
 
 

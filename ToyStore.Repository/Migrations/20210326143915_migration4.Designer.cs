@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ToyStore.Repository.Models;
 
 namespace ToyStore.Repository.Migrations
 {
     [DbContext(typeof(DbContextClass))]
-    partial class DbContextClassModelSnapshot : ModelSnapshot
+    [Migration("20210326143915_migration4")]
+    partial class migration4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,9 +42,6 @@ namespace ToyStore.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CurrentOfferSellableId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("SellableDescription")
                         .HasColumnType("nvarchar(max)");
 
@@ -57,9 +56,7 @@ namespace ToyStore.Repository.Migrations
 
                     b.HasKey("SellableId");
 
-                    b.HasIndex("CurrentOfferSellableId");
-
-                    b.ToTable("Sellables");
+                    b.ToTable("Sellable");
                 });
 
             modelBuilder.Entity("ToyStore.Models.DBModels.Customer", b =>
@@ -190,15 +187,6 @@ namespace ToyStore.Repository.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ToyStore.Models.Abstracts.Sellable", b =>
-                {
-                    b.HasOne("ToyStore.Models.Abstracts.Sellable", "CurrentOffer")
-                        .WithMany("Products")
-                        .HasForeignKey("CurrentOfferSellableId");
-
-                    b.Navigation("CurrentOffer");
-                });
-
             modelBuilder.Entity("ToyStore.Models.DBModels.Customer", b =>
                 {
                     b.HasOne("ToyStore.Models.DBModels.Order", "CurrentOrder")
@@ -238,11 +226,6 @@ namespace ToyStore.Repository.Migrations
                         .HasForeignKey("OrderId");
 
                     b.Navigation("Item");
-                });
-
-            modelBuilder.Entity("ToyStore.Models.Abstracts.Sellable", b =>
-                {
-                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("ToyStore.Models.DBModels.Customer", b =>

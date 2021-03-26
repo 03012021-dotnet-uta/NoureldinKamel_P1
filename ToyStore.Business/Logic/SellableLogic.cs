@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
@@ -27,8 +28,13 @@ namespace ToyStore.Business.Logic
         public List<SellableStack> GetAllSellables()
         {
             var sellableStacks = toyRepository.GetAllSellableItems();
-            System.Console.WriteLine(SerializeSellableStackList(sellableStacks));
+            // System.Console.WriteLine(SerializeSellableStackList(sellableStacks));
             return sellableStacks;
+        }
+
+        public SellableStack GetSellableById(Guid Id)
+        {
+            return toyRepository.GetSellableByIdDb(Id);
         }
 
         public int TestMethod(int i)
@@ -55,12 +61,12 @@ namespace ToyStore.Business.Logic
                 serialized += GetJsonProperty(3, "SellableName", sellableStack.Item.SellableName);
                 serialized += GetJsonProperty(3, "SellablePrice", sellableStack.Item.SellablePrice.ToString(), vQuotations: false);
                 serialized += GetJsonProperty(3, "SellableImagePath", sellableStack.Item.SellableImagePath);
-                if (sellableStack.Item.GetType() == new Offer().GetType())
+                if (sellableStack.Item.Products != null && sellableStack.Item.Products.Count > 0)
                 {
-                    Offer offer = (Offer)sellableStack.Item;
+                    var sellable = sellableStack.Item;
                     serialized += "   \"Products\": [\n";
-                    int productCount = offer.Products.Count - 1;
-                    offer.Products.ForEach(product =>
+                    int productCount = sellable.Products.Count - 1;
+                    sellable.Products.ForEach(product =>
                     {
                         serialized += "    {\n";
                         serialized += GetJsonProperty(5, "SellableName", product.SellableName);
