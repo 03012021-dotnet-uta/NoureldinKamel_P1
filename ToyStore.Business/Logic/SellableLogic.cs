@@ -67,11 +67,11 @@ namespace ToyStore.Business.Logic
                         serialized += GetJsonProperty(5, "SellablePrice", product.SellablePrice.ToString(), vQuotations: false);
                         serialized += GetJsonProperty(5, "SellableImagePath", product.SellableImagePath);
                         serialized += "     \"TagList\": [\n";
-                        int tagCounter = product.SellableTags.Count - 1;
-                        product.SellableTags.ForEach(tag =>
+                        int tagCounter = product.Tags.Count - 1;
+                        product.Tags.ForEach(tag =>
                         {
                             serialized += "      {\n";
-                            serialized += GetJsonProperty(7, "TagName", tag.TagType.TagName, comma: false);
+                            serialized += GetJsonProperty(7, "TagName", tag.TagName, comma: false);
                             serialized += "      }";
                             if (tagCounter <= 0)
                             {
@@ -99,11 +99,11 @@ namespace ToyStore.Business.Logic
                     serialized += "   ],\n";
                 }
                 serialized += "   \"TagList\": [\n";
-                int tagCounter = sellableStack.Item.SellableTags.Count - 1;
-                sellableStack.Item.SellableTags.ForEach(tag =>
+                int tagCounter = sellableStack.Item.Tags.Count - 1;
+                sellableStack.Item.Tags.ForEach(tag =>
                 {
                     serialized += "    {\n";
-                    serialized += GetJsonProperty(5, "TagName", tag.TagType.TagName, comma: false);
+                    serialized += GetJsonProperty(5, "TagName", tag.TagName, comma: false);
                     serialized += "    }";
                     if (tagCounter <= 0)
                     {

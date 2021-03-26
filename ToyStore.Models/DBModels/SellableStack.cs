@@ -32,9 +32,9 @@ namespace ToyStore.Models.DBModels
         /// <value></value>
         public int Count { get; set; }
 
-        public List<SellableTag> GetTags()
+        public List<Tag> GetTags()
         {
-            return Item.SellableTags;
+            return Item.Tags;
         }
     }
 }

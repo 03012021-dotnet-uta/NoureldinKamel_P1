@@ -26,11 +26,13 @@ namespace ToyStore.Repository.Models
         }
 
         public DbSet<Customer> Customers { get; set; }
+
+        //try splitting into offers and products
         public DbSet<Sellable> Sellables { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Tag> Tags { get; set; }
-        public DbSet<SellableTag> SellableTags { get; set; }
+        // public DbSet<SellableTag> SellableTags { get; set; }
         public DbSet<SellableStack> SellableStacks { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -48,8 +50,11 @@ namespace ToyStore.Repository.Models
             //     s1, s2, s3, s4);
 
             modelBuilder.Entity<Tag>().HasIndex(u => u.TagName).IsUnique();
-
-            modelBuilder.Entity<SellableTag>().HasKey(st => new { st.TagType.TagId, st.SellableItem.SellableId });
+            // modelBuilder.Entity<School>().HasMany(s => s.Students).WithOne(s => s.School);
+            // people : student => school
+            // sellable : offer => sellable
+            // modelBuilder.Entity<Sellable>().HasMany(s => (s as Offer).Products).WithOne(s => s.CurrentOffer);
+            // modelBuilder.Entity<SellableTag>().HasKey(st => new { st.TagType.TagId, st.SellableItem.SellableId });
 
             base.OnModelCreating(modelBuilder);
         }

@@ -242,7 +242,23 @@ namespace ToyStore.Repository.Models
 
         /* #endregion */
 
-
+        private bool HasProducts(Sellable sellable)
+        {
+            try
+            {
+                using (var db = new DbContextClass())
+                {
+                    // db.Sellables.Where(s => s.SellableId == sellable.SellableId).Include();
+                }
+                Console.WriteLine("test" + "YES");
+                return true;
+            }
+            catch (System.Exception)
+            {
+                Console.WriteLine("test" + "nope");
+                return false;
+            }
+        }
 
 
         public List<SellableStack> GetAllSellableItems()
@@ -253,14 +269,37 @@ namespace ToyStore.Repository.Models
                 var locationList = db.Locations
                     .Include(l => l.LocationInventory)
                     .ThenInclude(stack => stack.Item)
-                    .ThenInclude(s => s.SellableTags)
-                    .ThenInclude(st => st.TagType)
+                    .ThenInclude(st => st.Tags)
+                    // .Include(l => l.LocationInventory.Where(stack => stack.Item.GetType() == new Offer().GetType()))
+                    // .ThenInclude(stack => stack.Item)
+                    // .ThenInclude(s => (s as Offer).Products)
+                    // .Include(l => l.LocationInventory)
+                    // .ThenInclude(stack => (stack.Item as Offer).Products)
                     .ToList();
+                // locationList.AddRange(
+                //     db.Locations.Include(l => l.LocationInventory)
+                //     .ThenInclude(stack => stack.Item)
+                //     .ThenInclude(s => (s as Offer).Products)
+                //     .ToList()
+                // );
                 locationList.ForEach(location =>
                 {
-                    Console.WriteLine("test" + location.LocationName);
                     if (location.LocationInventory != null && location.LocationInventory.Count > 0)
                     {
+                        location.LocationInventory.ToList().ForEach(stack =>
+                        {
+                            System.Console.WriteLine("test: " + stack.Item.GetType());
+                            if (stack.Item.GetType() == new Offer().GetType())
+                            {
+                                db.Entry(stack.Item).Collection(s => (s as Offer).Products).Load();
+                                Console.WriteLine("test: " + stack.Item.SellableName + " " + (stack.Item as Offer).Products[0].SellableName);
+                                // db.SellableStacks
+                                // .Where(stack => stack.SellableStackId == stack.SellableStackId)
+                                // .Include(st => st.Item)
+                                // .ThenInclude(s => (s as Offer).Products);
+                            }
+                        });
+
                         Console.WriteLine("test" + "not null");
                         stackList.AddRange(location.LocationInventory);
                     }
@@ -373,7 +412,7 @@ namespace ToyStore.Repository.Models
                     {
                         ts.ForEach(tag =>
                         {
-                            tagSet.Add(tag.TagType);
+                            tagSet.Add(tag);
                         });
                     }
                 });
@@ -387,7 +426,7 @@ namespace ToyStore.Repository.Models
             var allSellableStacks = GetAllSellableItems();
             if (allSellableStacks != null && allSellableStacks.Count != 0)
             {
-                tagSellables = allSellableStacks.Where(stack => stack.GetTags().Any(t => t.TagType.TagName == neededTag.TagName)).ToList();
+                tagSellables = allSellableStacks.Where(stack => stack.GetTags().Any(t => t.TagName == neededTag.TagName)).ToList();
             }
             else
             {
@@ -439,29 +478,30 @@ namespace ToyStore.Repository.Models
                 SellableDescription = "A Creative tool for your child to experiment with",
                 SellableImagePath = @"https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/M_tic.jpg/220px-M_tic.jpg",
             };
-            var st1_1 = new SellableTag()
-            {
-                SellableItem = p1,
-                TagType = t1,
-            };
-            var st1_2 = new SellableTag()
-            {
-                SellableItem = p1,
-                TagType = t2,
-            };
-            p1.SellableTags = new List<SellableTag>() { st1_1, st1_2 };
-            var st2_2 = new SellableTag()
-            {
-                SellableItem = p2,
-                TagType = t2,
-            };
-            p2.SellableTags = new List<SellableTag>() { st2_2 };
-            var st3_3 = new SellableTag()
-            {
-                SellableItem = p3,
-                TagType = t3,
-            };
-            p3.SellableTags = new List<SellableTag>() { st3_3 };
+            // var st1_1 = new SellableTag()
+            // {
+            //     SellableItem = p1,
+            //     TagType = t1,
+            // };
+            // var st1_2 = new SellableTag()
+            // {
+            //     SellableItem = p1,
+            //     TagType = t2,
+            // };
+            // p1.SellableTags = new List<SellableTag>() { st1_1, st1_2 };
+            p1.Tags = new List<Tag>() { t1, t2 };
+            // var st2_2 = new SellableTag()
+            // {
+            //     SellableItem = p2,
+            //     TagType = t2,
+            // };
+            p2.Tags = new List<Tag>() { t2 };
+            // var st3_3 = new SellableTag()
+            // {
+            //     SellableItem = p3,
+            //     TagType = t3,
+            // };
+            p3.Tags = new List<Tag>() { t3 };
 
             var s1 = new SellableStack()
             {
@@ -493,17 +533,17 @@ namespace ToyStore.Repository.Models
                     p2
                 },
             };
-            var ot1_1 = new SellableTag()
-            {
-                SellableItem = o1,
-                TagType = t1,
-            };
-            var ot1_2 = new SellableTag()
-            {
-                SellableItem = o1,
-                TagType = t2,
-            };
-            o1.SellableTags = new List<SellableTag>() { ot1_1, ot1_2 };
+            // var ot1_1 = new SellableTag()
+            // {
+            //     SellableItem = o1,
+            //     TagType = t1,
+            // };
+            // var ot1_2 = new SellableTag()
+            // {
+            //     SellableItem = o1,
+            //     TagType = t2,
+            // };
+            o1.Tags = new List<Tag>() { t1, t2 };
 
             var s3 = new SellableStack()
             {

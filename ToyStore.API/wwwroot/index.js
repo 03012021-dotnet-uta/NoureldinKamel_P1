@@ -58,7 +58,9 @@ function DisplayStackList(stackList) {
         infoDiv.appendChild(createParagraphwClass("white-text", "Name: " + stack.Item.SellableName));
         infoDiv.appendChild(createParagraphwClass("white-text", "Price: $" + stack.Item.SellablePrice));
 
+        // console.log(stack.Item.Products);
         if (stack.Item.Products != undefined) {
+            console.log(stack.Item.Products[0]);
             let saveup = 0;
             let price = 0;
             stack.Item.Products.forEach(sellable => {

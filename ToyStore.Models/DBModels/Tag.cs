@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using ToyStore.Models.Abstracts;
 using ToyStore.Models.Interfaces;
 
 namespace ToyStore.Models.DBModels
@@ -22,5 +24,11 @@ namespace ToyStore.Models.DBModels
         /// this should be unique
         /// </summary>
         public string TagName;
+
+        /// <summary>
+        /// The list of sellables that has this tag.
+        /// </summary>
+        /// <value></value>
+        public List<Sellable> TagSellables { get; set; }
     }
 }
