@@ -425,7 +425,7 @@ namespace ToyStore.Repository.Models
             {
                 try
                 {
-                    stack = db.SellableStacks.Where(s => s.Item.SellableId == id).Include(stack => stack.Item).First();
+                    stack = db.SellableStacks.Where(s => s.Item.SellableId == id).Include(stack => stack.Item).ThenInclude(sel => sel.Tags).First();
                     db.Entry(stack.Item).Collection(s => s.Products).Load();
                 }
                 catch (System.Exception e)

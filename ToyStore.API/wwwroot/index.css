@@ -1,36 +1,3 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif;
-  font-size: 15pt;
-  color: darkcyan;
-}
-
-body {
-  background-color: #d3d3d3;
-}
-
-h1 {
-  font-size: 30pt;
-}
-
-h2 {
-  font-size: 23pt;
-}
-
-.white-text {
-  color: white;
-}
-
-.section {
-  padding: 2vh 5vw;
-}
-
-.round-border {
-  border-radius: 5pt;
-}
-
 .horizontal-slider {
   width: 100%;
   overflow-x: scroll;
@@ -87,15 +54,6 @@ h2 {
   position: absolute;
   top: -9999px;
   bottom: -9999px;
-}
-
-.tag {
-  display: inline-block;
-  background-color: white;
-  border-radius: 5pt;
-  line-height: 1.1;
-  margin-left: 5pt;
-  padding: 3pt 2pt;
 }
 
 .card-info-div {
