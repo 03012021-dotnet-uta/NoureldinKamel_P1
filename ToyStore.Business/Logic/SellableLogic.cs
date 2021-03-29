@@ -147,6 +147,11 @@ namespace ToyStore.Business.Logic
             return serialized;
         }
 
+        public List<Customer> GetCustomersForStackWId(Guid id)
+        {
+            return toyRepository.GetCustomersWhoBoughtStack(id);
+        }
+
         private string GetJsonProperty(int depth, string Name, string value, bool vQuotations = true, bool comma = true)
         {
             // string d = "";

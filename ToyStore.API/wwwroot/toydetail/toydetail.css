@@ -1,8 +1,41 @@
-.bg-img {
+:root {
+  --bgColor: #f6f6f6;
+  --white: white;
+  --blue: #56baec;
+  --blue-hover: #39ace7;
+  --text-light: #b6a8a7;
+  --text-dark: #0d0d0d;
+  --link-color: #92badd;
+  --inactive-color: #cccccc;
+}
+
+/* body {
+  background-color: var(--blue);
+} */
+
+h1 {
+  margin-bottom: 20pt;
+}
+h2 {
+  margin-bottom: 10pt;
+}
+
+.main-img-holder {
+  display: inline-block;
+  border-radius: 5pt;
   overflow: hidden;
+}
+
+.bg-img {
+  overflow: visible;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  transition: 0.5s;
+}
+
+.bg-img:hover.img-container {
+  background-size: contain;
 }
 
 .img-container {
@@ -14,6 +47,11 @@
   min-height: 500px;
 }
 
+.img-container:hover {
+  max-height: 60vh;
+  min-height: 600px;
+}
+
 @media screen and (max-width: 600px) {
   .img-container {
     width: 90vw;
@@ -21,12 +59,12 @@
 }
 
 .toy-info {
-  background-color: white;
+  background-color: var(--white);
   padding: 10pt 5vw;
 }
 
 .info-title {
-  color: darkcyan;
+  color: var(--text-light);
 }
 
 .info-desc {
@@ -38,7 +76,7 @@
 }
 
 .tag {
-  background-color: darkcyan;
+  background-color: var(--blue);
   color: white;
 }
 
@@ -116,9 +154,10 @@
   width: 80vw;
   text-align: center;
   align-items: center;
-  background-color: darkcyan;
+  /* background-color: var(--bgColor); */
   border-radius: 5pt;
   padding: 5pt 1vw;
+  background-color: var(--blue);
 }
 
 .horizontal-slider {
@@ -144,10 +183,22 @@
   display: inline-block;
   border-radius: 5pt;
   overflow: hidden;
+  margin: 10pt 5pt;
+  margin-right: 30pt;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.product-img-holder:hover {
+  -moz-transform: scale(1.05);
+  -webkit-transform: scale(1.05);
+  -o-transform: scale(1.05);
+  -ms-transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 .product-img {
-  width: 45vw;
+  width: 30vw;
   height: 45vh;
 }
 
@@ -158,7 +209,7 @@
 }
 
 .product-info {
-  background-color: white;
+  background-color: var(--white);
   text-align: left;
   padding: 10pt 5pt 5pt;
 }
@@ -166,7 +217,7 @@
 /* customer list */
 .customer-list {
   padding: 10pt 5vw;
-  background-color: white;
+  background-color: var(--white);
   border-radius: 5pt;
 }
 
@@ -174,15 +225,16 @@
   height: 200px;
   overflow-y: scroll;
   padding: 5pt 10pt;
-  background-color: darkcyan;
+  /* background-color: var(--bgColor); */
   border-radius: 5pt;
+  background-color: var(--blue);
 }
 
 .customer-info {
   margin: 8pt;
   padding: 8pt;
-  border: 2px solid darkcyan;
-  background-color: white;
+  /* border: 2px solid var(--inactive-color); */
+  background-color: var(--white);
   border-radius: 5pt;
   display: grid;
   grid: auto auto / min-content min-content;

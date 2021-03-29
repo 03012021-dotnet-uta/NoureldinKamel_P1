@@ -59,9 +59,11 @@ namespace ToyStore.Repository.Models
                 {
                     try
                     {
+                        customerIn.SetPass(customerIn.CustomerPass);
                         db.Customers.Add(customerIn);
+                        db.SaveChanges();
                         customerOut = db.Customers.Where(c => c.CustomerId == customerIn.CustomerId).First();
-                        return db.SaveChanges() > 0;
+                        return true;
                     }
                     catch (System.Exception e2)
                     {
@@ -186,7 +188,6 @@ namespace ToyStore.Repository.Models
                 return db.SaveChanges() > 0;
             }
         }
-
 
         /// <summary>
         /// Removes a sellable item from an order.
@@ -418,6 +419,17 @@ namespace ToyStore.Repository.Models
             // };
         }
 
+
+        public List<Customer> GetCustomersWhoBoughtStack(Guid id)
+        {
+            List<Customer> customers = new List<Customer>();
+            using (var db = new DbContextClass())
+            {
+                customers = db.Customers.Include(c => c.FinishedOrders.Where(or => or.cart.Any(stack => stack.SellableStackId == id))).ToList();
+            }
+            return customers;
+        }
+
         public SellableStack GetSellableByIdDb(Guid id)
         {
             SellableStack stack = null;
@@ -425,8 +437,14 @@ namespace ToyStore.Repository.Models
             {
                 try
                 {
-                    stack = db.SellableStacks.Where(s => s.Item.SellableId == id).Include(stack => stack.Item).ThenInclude(sel => sel.Tags).First();
-                    db.Entry(stack.Item).Collection(s => s.Products).Load();
+                    stack = db.SellableStacks.Where(s => s.Item.SellableId == id)
+                        .Include(stack => stack.Item)
+                        .ThenInclude(sel => sel.Tags)
+                        .Include(stack => stack.Item)
+                        .ThenInclude(sel => sel.Products)
+                        .ThenInclude(sel => sel.Tags)
+                        .First();
+                    // db.Entry(stack.Item).Collection(s => s.Products).Load();
                 }
                 catch (System.Exception e)
                 {

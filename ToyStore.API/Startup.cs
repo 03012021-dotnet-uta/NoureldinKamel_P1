@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using ToyStore.Business.Authentication;
 using ToyStore.Business.Logic;
 using ToyStore.Models.DBModels;
 using ToyStore.Repository.Models;
@@ -31,7 +32,6 @@ namespace ToyStore.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // todo: ask how to fix the import here
             string connectionString = Configuration.GetConnectionString("ToysDb");
             services.AddDbContext<DbContextClass>(options =>
             {
@@ -41,6 +41,7 @@ namespace ToyStore.API
             // todo: add scoped stuff here
             services.AddScoped<SellableLogic>();
             services.AddScoped<ToyRepository>();
+            // services.AddScoped<Authenticator>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -71,7 +72,8 @@ namespace ToyStore.API
             // app.UseRewriter(new Microsoft.AspNetCore.Rewrite.RewriteOptions())
 
             app.UseRewriter(new RewriteOptions()
-                .AddRedirect("^$", "toydetail/toydetail.html"));
+                .AddRedirect("^$", "index.html"));
+            // .AddRedirect("^$", "toydetail/toydetail.html"));
 
             app.UseStaticFiles();
 

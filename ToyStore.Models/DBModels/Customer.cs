@@ -60,6 +60,16 @@ namespace ToyStore.Models.DBModels
 
         private int MIN_PASS_LENGTH = 8;
 
+        [NotMapped]
+        public Token CustomerToken { get; set; }
+
+        /// <summary>
+        /// A method for setting the customer a new password. <br/>
+        /// This is the only valid way of giving the user a new password
+        /// as this method handles hashing and then saves the password
+        /// </summary>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public bool SetPass(string password)
         {
             if (password.Length < MIN_PASS_LENGTH)
@@ -81,6 +91,7 @@ namespace ToyStore.Models.DBModels
         /// <returns>true if matching</returns>
         public bool ComparePasswords(string enteredPass)
         {
+            System.Console.WriteLine("this: " + this.CustomerPass + "that: " + enteredPass);
             return new PasswordHasher().ComparePass(this.CustomerPass, enteredPass);
         }
 

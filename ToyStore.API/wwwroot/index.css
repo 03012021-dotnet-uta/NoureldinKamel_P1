@@ -1,3 +1,18 @@
+:root {
+  --bgColor: #f6f6f6;
+  --white: white;
+  --blue: #56baec;
+  --blue-hover: #39ace7;
+  --text-light: #b6a8a7;
+  --text-dark: #0d0d0d;
+  --link-color: #92badd;
+  --inactive-color: #cccccc;
+}
+
+/* .blue-text {
+  color: var(--blue);
+} */
+
 .horizontal-slider {
   width: 100%;
   overflow-x: scroll;
@@ -9,12 +24,13 @@
 }
 .horizontal-slider::-webkit-scrollbar-thumb {
   height: 10px;
-  background-color: darkcyan;
+  background-color: var(--blue);
 }
 
 .product-carousel {
   /* background-color: white; */
   /* padding: 5px; */
+  background-color: white;
   border: 0;
   /* line-height: 0.5; */
   white-space: nowrap;
@@ -22,27 +38,42 @@
 
 .toy-card {
   height: 300px;
-  background-color: darkcyan;
+  background-color: var(--white);
   display: inline-block;
   width: 200px;
-  margin: 5pt;
+  margin: 5pt 15pt;
   border: 0;
   border-radius: 5pt;
   overflow: hidden;
   line-height: 1.1;
   cursor: pointer;
   white-space: normal;
+  transition: 0.5s;
 }
 
 .toy-card:hover {
-  background-color: tomato;
+  /* background-color: var(--inactive-color);
+  color: black; */
+  -moz-transform: scale(1.05);
+  -webkit-transform: scale(1.05);
+  -o-transform: scale(1.05);
+  -ms-transform: scale(1.05);
+  transform: scale(1.05);
+}
+
+/* .toy-card:hover p,
+.toy-card:hover span {
+  color: black;
   transition: 0.5s;
+} */
+
+.toy-card:hover .tag {
+  color: var(--white);
 }
 
 .card-img-container {
   width: 200px;
   display: inline-block;
-  background-color: darkcyan;
   height: 120px;
   overflow: hidden;
   position: relative;

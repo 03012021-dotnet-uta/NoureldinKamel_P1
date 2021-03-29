@@ -71,7 +71,21 @@ namespace ToyStore.API.Controllers
             // Console.WriteLine("json: " + jsonString);
             // sellableLogic.seedDB();
             var jsonString = sellableLogic.SerializeSellableStackList(sellableLogic.GetAllSellables());
-            return jsonString;
+            return JsonConvert.SerializeObject(sellableLogic.GetAllSellables(),
+                new Newtonsoft.Json.JsonSerializerSettings() { ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore });
+            // return jsonString;
+        }
+
+        [HttpGet("tags")]
+        public List<string> GetTags()
+        {
+            var nameList = new List<String>();
+            sellableLogic.GetAvailableTags().ForEach(tag =>
+            {
+                System.Console.WriteLine(tag.TagName);
+                nameList.Add(tag.TagName);
+            });
+            return nameList;
         }
 
         [HttpPost("detail")]
@@ -95,16 +109,29 @@ namespace ToyStore.API.Controllers
             // return new SellableStack();
 
         }
-        [HttpGet("tags")]
-        public List<string> GetTags()
+
+
+        [HttpPost("customers")]
+        public string GetCustomers([FromBody] object obj)
         {
-            var nameList = new List<String>();
-            sellableLogic.GetAvailableTags().ForEach(tag =>
-            {
-                System.Console.WriteLine(tag.TagName);
-                nameList.Add(tag.TagName);
-            });
-            return nameList;
+            System.Console.WriteLine("hello?: " + obj.ToString());
+            var z = new { id = "" };
+            string k = obj.ToString().Split("\"")[3];
+            var id = new Guid(k);
+            // var x = obj.GetType().GetProperty("id");
+            // string y = (string)x.GetValue(obj, null);
+            System.Console.WriteLine("hello?: " + k);
+            // var oj = id.Property("id");
+            var nameList = sellableLogic.GetCustomersForStackWId(id);
+            System.Console.WriteLine(nameList);
+            // var ser = Newtonsoft.Json.JsonSerializer.Create(
+            // );
+
+            return JsonConvert.SerializeObject(nameList,
+                 new Newtonsoft.Json.JsonSerializerSettings() { ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore });
+            // return nameList;
+            // return new SellableStack();
+
         }
     }
 }

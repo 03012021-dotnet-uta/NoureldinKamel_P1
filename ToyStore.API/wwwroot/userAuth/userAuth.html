@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../base.css" />
+    <link rel="stylesheet" href="userAuth.css" />
+    <title>ToyStore</title>
+  </head>
+  <body>
+    <section class="section">
+      <div class="wrapper fadeInDown">
+        <div id="formContent">
+          <div style="height: 30pt"></div>
+          <h2>Welcome To ToyStore</h2>
+
+          <!-- Tabs Titles -->
+          <h3 id="login-selector" class="btn-active">Sign In</h3>
+          <h3 id="reg-selector" class="btn-inactive">Sign Up</h3>
+
+          <!-- Login Form -->
+          <form id="login-form">
+            <input
+              type="text"
+              id="login"
+              class="fadeIn second"
+              name="username"
+              placeholder="Username"
+              required
+            />
+            <input
+              type="password"
+              id="password1"
+              class="fadeIn third"
+              name="password"
+              placeholder="Password"
+              required
+            />
+            <input type="submit" class="fadeIn fourth" value="Log In" />
+          </form>
+          <!-- Register Form -->
+          <form id="registration-form">
+            <input
+              type="text"
+              id="register"
+              class="fadeIn second"
+              name="username"
+              placeholder="Username"
+              required
+            />
+            <input
+              type="password"
+              id="password"
+              class="fadeIn third"
+              name="password"
+              placeholder="Password"
+              required
+            />
+            <input
+              type="password"
+              id="password2"
+              class="fadeIn third"
+              name="confpassword"
+              placeholder="Password"
+              required
+            />
+            <input type="submit" class="fadeIn fourth" value="Register" />
+          </form>
+
+          <!-- <div id="formFooter">
+            <a class="underlineHover" href="#">Forgot Password?</a>
+          </div> -->
+        </div>
+      </div>
+    </section>
+    <script src="userAuth.js"></script>
+  </body>
+</html>
