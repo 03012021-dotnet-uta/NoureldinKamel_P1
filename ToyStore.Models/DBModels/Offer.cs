@@ -21,5 +21,10 @@ namespace ToyStore.Models.DBModels
         {
             return this.SellableName.Equals(((Sellable)obj).SellableName);
         }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

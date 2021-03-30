@@ -10,7 +10,6 @@ const urlParams = new URLSearchParams(window.location.search);
 // console.log(urlParams.get("id"));
 let parsedId = urlParams.get("id");
 // parsedId = parsedId.replace("/[']+/g", "");
-parsedId = parsedId.slice(1, -1);
 // console.log("parsedid: " + parsedId);
 
 // url.search = new URLSearchParams(params).toString();
@@ -20,13 +19,13 @@ const data = {
 };
 
 fetch("../api/toy/detail", {
-  method: "POST",
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify(data),
-})
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
   .then((response) => response.json())
   .then((textjson) => {
     return JSON.parse(textjson);
@@ -37,13 +36,13 @@ fetch("../api/toy/detail", {
   });
 
 fetch("../api/toy/customers", {
-  method: "POST",
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify(data),
-})
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
   .then((response) => response.json())
   .then((textjson) => {
     return JSON.parse(textjson);
@@ -103,8 +102,12 @@ function buildProductSection(itemStack, customerSection) {
     const prodInfoDiv = createDivwClass("product-info");
     sellableDiv.appendChild(prodInfoDiv);
 
-    buildInfoBeforeSave({ Item: sellable }, prodInfoDiv);
-    buildInfoAfterSave({ Item: sellable }, prodInfoDiv);
+    buildInfoBeforeSave({
+      Item: sellable
+    }, prodInfoDiv);
+    buildInfoAfterSave({
+      Item: sellable
+    }, prodInfoDiv);
     sliderDiv.appendChild(sellableDiv);
     productsSection.appendChild(productsHolderDiv);
   });
@@ -121,7 +124,7 @@ function buildInfoAfterSave(itemStack, infoSection) {
   let tagTitleSn = createSpanwClass("info-title", "Tags:");
   let tagDiv = createDivwClass("tags-holder");
   itemStack.Item.Tags.forEach((tag) => {
-    span = createSpanwClass("tag blue-shadow", tag.TagName);
+    const span = createSpanwClass("tag blue-shadow", tag.TagName);
     tagDiv.appendChild(span);
   });
 

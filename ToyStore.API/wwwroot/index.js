@@ -16,13 +16,6 @@ fetch("api/toy/tags")
     console.log(textjson);
   });
 
-const loginNav = document.querySelector("#login-nav");
-const regNav = document.querySelector("#register-nav");
-const tagNav = document.querySelector("#tags-nav");
-const homeNav = document.querySelector("#home-nav");
-loginNav.addEventListener("click", function () {
-  sendToUrl("userAuth/userAuth.html", { test: "alo" });
-});
 // .catch(error => {
 //     console.log(error);
 // });
@@ -38,6 +31,7 @@ loginNav.addEventListener("click", function () {
 
 var offerList = Array();
 
+
 function DisplayStackList(stackList) {
   let cardDiv = null;
   let imgDiv = null;
@@ -51,7 +45,13 @@ function DisplayStackList(stackList) {
 
   for (let i = 0; i < stackList.length; i++) {
     stack = stackList[i];
-    ({ cardDiv, imgDiv, tagDiv, infoDiv, img } = createMainDivs());
+    ({
+      cardDiv,
+      imgDiv,
+      tagDiv,
+      infoDiv,
+      img
+    } = createMainDivs());
 
     displayBeforeOfferSave(
       toyCarouselDiv,
@@ -87,7 +87,13 @@ function DisplayOfferList() {
     stack = stackList[i];
     console.log("alo?");
     console.log(stack);
-    ({ cardDiv, imgDiv, tagDiv, infoDiv, img } = createMainDivs());
+    ({
+      cardDiv,
+      imgDiv,
+      tagDiv,
+      infoDiv,
+      img
+    } = createMainDivs());
 
     displayBeforeOfferSave(
       toyCarouselDiv,
@@ -154,7 +160,7 @@ function displayBeforeOfferSave(
 }
 
 function sendToDetail(stack) {
-  window.location.href = `toydetail/toydetail.html?id='${stack.Item.SellableId}'`;
+  window.location.href = `toydetail/toydetail.html?id=${stack.Item.SellableId}`;
   console.log("clicked: " + stack.Item.SellableName);
 }
 
@@ -208,12 +214,4 @@ function createSpanwClass(classname, text) {
   span.innerHTML = text;
   span.setAttribute("style", "padding-right:5pt");
   return span;
-}
-
-function sendToUrl(url, data) {
-  const qs = Object.keys(data)
-    .map((key) => `${key}=${data[key]}`)
-    .join("&");
-  console.log(url + "?" + qs);
-  window.location.href = url + "?" + qs;
 }

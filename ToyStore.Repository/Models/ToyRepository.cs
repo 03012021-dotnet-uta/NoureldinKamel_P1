@@ -17,16 +17,16 @@ namespace ToyStore.Repository.Models
         }
         /* #region Authentications */
 
-        public bool Login(string username, string password, out Customer customer)
+        public bool Login(AuthModel authModel, out Customer customer)
         {
             customer = null;
             try
             {
                 using (var db = new DbContextClass())
                 {
-                    customer = db.Customers.Where(c => c.CustomerUName == username).First();
+                    customer = db.Customers.Where(c => c.CustomerUName == authModel.Username).First();
                 }
-                if (customer.ComparePasswords(password))
+                if (customer.ComparePasswords(authModel.Password))
                 {
                     return true;
                 }
@@ -42,14 +42,14 @@ namespace ToyStore.Repository.Models
         }
 
 
-        public bool Register(Customer customerIn, out Customer customerOut)
+        public bool Register(AuthModel authModel, out Customer customerOut)
         {
             customerOut = null;
             try
             {
                 using (var db = new DbContextClass())
                 {
-                    db.Customers.Where(c => c.CustomerUName == customerIn.CustomerUName).First();
+                    db.Customers.Where(c => c.CustomerUName == authModel.Username).First();
                 }
                 return false;
             }
@@ -57,12 +57,18 @@ namespace ToyStore.Repository.Models
             {
                 using (var db = new DbContextClass())
                 {
+                    var c = new Customer()
+                    {
+                        CustomerUName = authModel.Username,
+                        FirstName = authModel.FirstName,
+                        LastName = authModel.LastName,
+                    };
+                    c.SetPass(authModel.Password);
                     try
                     {
-                        customerIn.SetPass(customerIn.CustomerPass);
-                        db.Customers.Add(customerIn);
+                        db.Customers.Add(c);
                         db.SaveChanges();
-                        customerOut = db.Customers.Where(c => c.CustomerId == customerIn.CustomerId).First();
+                        customerOut = db.Customers.Where(cu => cu.CustomerId == c.CustomerId).First();
                         return true;
                     }
                     catch (System.Exception e2)

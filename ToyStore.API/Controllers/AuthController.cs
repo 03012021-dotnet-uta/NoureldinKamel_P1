@@ -29,26 +29,48 @@ namespace ToyStore.API.Controllers
         }
 
         [HttpPost("login")]
-        public string Login([FromBody] Customer customer)
+        public ActionResult<string> Login([FromBody] AuthModel authModel)
         {
-            System.Console.WriteLine("blz blz???");
-            System.Console.WriteLine("test: " + customer.CustomerUName + " " + customer.CustomerPass);
+            // System.Console.WriteLine("test: " + customer.CustomerUName + " " + customer.CustomerPass);
             Customer customerOut;
-            var sdfs = _authenticator.Authenticate(customer.CustomerUName, customer.CustomerPass, out customerOut);
-            System.Console.WriteLine("token: " + customerOut.CustomerToken);
-            return JsonConvert.SerializeObject(customerOut,
-                     new Newtonsoft.Json.JsonSerializerSettings() { ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore });
+            var sdfs = _authenticator.Authenticate(authModel, out customerOut);
+            if (sdfs)
+            {
+                System.Console.WriteLine("token: " + customerOut.CustomerToken);
+                return JsonConvert.SerializeObject(customerOut,
+                         new Newtonsoft.Json.JsonSerializerSettings() { ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore });
+            }
+            return StatusCode(401);
         }
 
 
         [HttpPost("register")]
-        public string Register([FromBody] Customer customer)
+        public ActionResult<string> Register([FromBody] AuthModel authModel)
         {
             Customer customerOut;
-            var sdfs = _authenticator.CreateNewCustomer(customer, out customerOut);
-            System.Console.WriteLine("token: " + customerOut.CustomerToken);
-            return JsonConvert.SerializeObject(customerOut,
-                     new Newtonsoft.Json.JsonSerializerSettings() { ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore });
+            bool sdfs = _authenticator.CreateNewCustomer(authModel, out customerOut);
+            if (sdfs == true)
+            {
+                System.Console.WriteLine("token: " + customerOut.CustomerToken);
+                return JsonConvert.SerializeObject(customerOut,
+                         new Newtonsoft.Json.JsonSerializerSettings() { ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore });
+            }
+            return StatusCode(401);
+        }
+
+
+        [HttpPost("validteToken")]
+        public ActionResult<string> ValidateToken([FromBody] Token token)
+        {
+            Customer customerOut;
+            bool sdfs = _authenticator.ValidateToken(token, out customerOut);
+            if (sdfs == true)
+            {
+                System.Console.WriteLine("token: " + customerOut.CustomerToken);
+                return JsonConvert.SerializeObject(customerOut,
+                         new Newtonsoft.Json.JsonSerializerSettings() { ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore });
+            }
+            return StatusCode(401);
         }
 
     }

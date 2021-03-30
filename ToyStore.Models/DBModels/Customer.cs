@@ -91,7 +91,6 @@ namespace ToyStore.Models.DBModels
         /// <returns>true if matching</returns>
         public bool ComparePasswords(string enteredPass)
         {
-            System.Console.WriteLine("this: " + this.CustomerPass + "that: " + enteredPass);
             return new PasswordHasher().ComparePass(this.CustomerPass, enteredPass);
         }
 
@@ -167,8 +166,10 @@ namespace ToyStore.Models.DBModels
             byte[] hash = pbkdf2.GetBytes(20);
             /* Compare the results */
             for (int i = 0; i < 20; i++)
+            {
                 if (hashBytes[i + 16] != hash[i])
                     return false;
+            }
 
             return true;
         }

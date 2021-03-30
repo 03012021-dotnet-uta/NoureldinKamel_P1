@@ -7,7 +7,7 @@ namespace ToyStore.Business.Authentication
 {
     public class Authenticator
     {
-        private Dictionary<Customer, Token> _currentCustomers = new Dictionary<Customer, Token>();
+        private Dictionary<Token, Customer> _currentCustomers = new Dictionary<Token, Customer>();
         private Authenticator()
         {
             _toyRepository = new ToyRepository();
@@ -29,37 +29,67 @@ namespace ToyStore.Business.Authentication
 
         private ToyRepository _toyRepository;
 
-        public bool Authenticate(string username, string password, out Customer customer)
+        public bool Authenticate(AuthModel authModel, out Customer customerOut)
         {
-            // customer = null;
-            if (_toyRepository.Login(username, password, out customer))
+            Customer customer = null;
+            customerOut = null;
+            if (_toyRepository.Login(authModel, out customer))
             {
-                var token = new Token() { TokenValue = Guid.NewGuid(), TokenCustomer = customer };
+                var token = new Token() { TokenValue = Guid.NewGuid() };
                 _assignToken(customer, token);
+                customerOut = new Customer();
+                getCleanCustomer(customerOut, customer);
                 return true;
             }
             return false;
         }
 
-        public bool ValidateToken(Token token, Customer customer)
+        public bool ValidateToken(Token token, out Customer customer)
         {
-            if (_currentCustomers[customer].TokenValue == token.TokenValue)
+            customer = null;
+            if (token.CheckExpiration())
             {
-                if (token.CheckExpiration())
-                {
-                    return true;
-                }
+                customer = new Customer();
+                var c = _currentCustomers[token];
+                getCleanCustomer(customer, c);
+                return true;
             }
+            // if (_currentCustomers[token].TokenValue == token.TokenValue)
+            // {
+            //     if (token.CheckExpiration())
+            //     {
+            //         return true;
+            //     }
+            // }
             return false;
         }
 
-        public bool CreateNewCustomer(Customer customerIn, out Customer customerOut)
+        /// <summary>
+        /// put all data in c into customer. <br/>
+        /// except the password
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <param name="c"></param>
+        private static void getCleanCustomer(Customer customer, Customer c)
         {
-            // customer = null;
-            if (_toyRepository.Register(customerIn, out customerOut))
+            customer.FinishedOrders = c.FinishedOrders;
+            customer.CurrentOrder = c.CurrentOrder;
+            customer.CustomerToken = c.CustomerToken;
+            customer.FirstName = c.FirstName;
+            customer.LastName = c.LastName;
+            customer.CustomerUName = c.CustomerUName;
+        }
+
+        public bool CreateNewCustomer(AuthModel authModel, out Customer customerOut)
+        {
+            Customer customer = null;
+            customerOut = null;
+            if (_toyRepository.Register(authModel, out customer))
             {
-                var token = new Token() { TokenValue = Guid.NewGuid(), TokenCustomer = customerOut };
-                _assignToken(customerOut, token);
+                customerOut = new Customer();
+                var token = new Token() { TokenValue = Guid.NewGuid() };
+                _assignToken(customer, token);
+                getCleanCustomer(customerOut, customer);
                 return true;
             }
             return false;
@@ -68,7 +98,7 @@ namespace ToyStore.Business.Authentication
         private void _assignToken(Customer customer, Token token)
         {
             customer.CustomerToken = token;
-            _currentCustomers.Add(customer, token);
+            _currentCustomers.Add(token, customer);
         }
     }
 }

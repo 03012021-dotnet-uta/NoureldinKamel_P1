@@ -37,12 +37,13 @@
               placeholder="Password"
               required
             />
+            <div id="login-error-div"></div>
             <input type="submit" class="fadeIn fourth" value="Log In" />
           </form>
           <!-- Register Form -->
           <form id="registration-form">
             <input
-              type="text"
+              type="username"
               id="register"
               class="fadeIn second"
               name="username"
@@ -61,10 +62,27 @@
               type="password"
               id="password2"
               class="fadeIn third"
-              name="confpassword"
-              placeholder="Password"
+              name="confpass"
+              placeholder="Repeat Password"
               required
             />
+            <input
+              type="text"
+              id="firstname"
+              class="fadeIn second"
+              name="fistname"
+              placeholder="First Name"
+              required
+            />
+            <input
+              type="text"
+              id="lastname"
+              class="fadeIn second"
+              name="lastname"
+              placeholder="Last Name"
+              required
+            />
+            <div id="reg-error-div"></div>
             <input type="submit" class="fadeIn fourth" value="Register" />
           </form>
 

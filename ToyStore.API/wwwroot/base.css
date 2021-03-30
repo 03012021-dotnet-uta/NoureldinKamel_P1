@@ -62,14 +62,17 @@ body {
 }
 
 .nav-title {
+  cursor: pointer;
   float: left;
 }
 
 .nav-left {
+  cursor: pointer;
   float: left;
 }
 
 .nav-right {
+  cursor: pointer;
   float: right;
 }
 
