@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using ToyStore.Business.Authentication;
 using ToyStore.Business.Logic;
 using ToyStore.Models.DBModels;
+using ToyStore.Models.ControllerModels;
 
 namespace ToyStore.API.Controllers
 {
@@ -23,9 +24,9 @@ namespace ToyStore.API.Controllers
     {
         private readonly Authenticator _authenticator;
 
-        public AuthController()
+        public AuthController(Authenticator _authenticator)
         {
-            this._authenticator = Authenticator.Instance;
+            this._authenticator = _authenticator;
         }
 
         [HttpPost("login")]
@@ -59,7 +60,7 @@ namespace ToyStore.API.Controllers
         }
 
 
-        [HttpPost("validteToken")]
+        [HttpPost("validateToken")]
         public ActionResult<string> ValidateToken([FromBody] Token token)
         {
             Customer customerOut;

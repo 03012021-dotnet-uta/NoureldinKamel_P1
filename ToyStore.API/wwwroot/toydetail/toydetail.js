@@ -6,19 +6,30 @@
 // let params = ["id", "D6CDD398-D2FC-4FA3-9FB9-87D840C58198"];
 
 // console.log(window.location.search);
-const urlParams = new URLSearchParams(window.location.search);
+const urlParamsToys = new URLSearchParams(window.location.search);
 // console.log(urlParams.get("id"));
-let parsedId = urlParams.get("id");
+let STACK_ID = "";
+let SELLABLE_ID = "";
+let parsedToyId = urlParamsToys.get("stackId");
+let url = "";
+if (parsedToyId == undefined) {
+  parsedToyId = urlParamsToys.get("sellableid");
+  SELLABLE_ID = parsedToyId;
+  url = "../api/toy/anydetail";
+} else {
+  url = "../api/toy/detail";
+  STACK_ID = parsedToyId;
+}
 // parsedId = parsedId.replace("/[']+/g", "");
-// console.log("parsedid: " + parsedId);
+console.log("parsedid: " + parsedToyId);
 
 // url.search = new URLSearchParams(params).toString();
 const data = {
-  id: parsedId,
+  id: parsedToyId,
   // id: "9a54dec8-afc0-427b-8516-fc8dbcb326ef",
 };
 
-fetch("../api/toy/detail", {
+fetch(url, {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -32,6 +43,7 @@ fetch("../api/toy/detail", {
   })
   .then((itemObj) => {
     console.log(itemObj);
+    STACK_ID = itemObj.Stack.SellableStackId;
     buildPage(itemObj);
   });
 
@@ -49,11 +61,40 @@ fetch("../api/toy/customers", {
   })
   .then((customerList) => {
     console.log(customerList);
+    buildStackCustomers(customerList);
   });
 
 // todo: get the customers that bought it
 
-function buildPage(itemStack) {
+function buildStackCustomers(customerList) {
+
+  //   <div class="customer-info black-shadow">
+  //   <span>User: </span>
+  //   <span>asdfafds</span>
+  //   <span>Amount: </span>
+  //   <span>2</span>
+  // </div>
+  console.log("customerList...");
+  console.log(customerList);
+  if (customerList.length > 0) {
+    const div = document.querySelector("#div-scroll");
+    Array.from(customerList).forEach(customer => {
+      const custDiv = createDivwClass("customer-info black-shadow");
+      const userSpan = createSpanwClass("", "User");
+      const userName = createSpanwClass("", `${customer.FirstName} ${customer.LastName}`);
+      const amountSpan = createSpanwClass("", "Amount");
+      const amountCount = createSpanwClass("", `${customer.FinishedOrders[0].Cart[0].Count}`);
+      custDiv.appendChild(userSpan);
+      custDiv.appendChild(userName);
+      custDiv.appendChild(amountSpan);
+      custDiv.appendChild(amountCount);
+      div.appendChild(custDiv);
+    });
+  }
+}
+
+function buildPage(something) {
+  let itemStack = something.Stack;
   createMainProductImg(itemStack);
 
   let infoSection = document.querySelector("#info-section");
@@ -71,9 +112,63 @@ function buildPage(itemStack) {
   if (itemStack.Item.Products != null && itemStack.Item.Products.length > 0) {
     buildProductSection(itemStack, customerSection);
   }
+
+  buildAddToCartButton(infoSection, itemStack);
+
+  let alts = something.Alternatives;
+  // <div class="div-list">
+  // <h2>Same Item can be found in</h2>
+  // <div class="div-scroll"></div>
+  // </div>
+
+  if (alts.length > 0) {
+    let horizontalslider = createDivwClass("horizontal-slider");
+    let productcarousel = createDivwClass("product-carousel");
+    let h22 = document.createElement("h2");
+    h22.innerText = "Same Item can be found in";
+    let bigDiv = document.querySelector("#alternatives");
+    bigDiv.appendChild(h22);
+    productcarousel.appendChild(horizontalslider);
+    bigDiv.appendChild(productcarousel);
+    Array.from(alts).forEach(stack => {
+      console.log("first stack in alts: ");
+      console.log(stack);
+      let stackdiv = createDivwClass("product-img-holder");
+      horizontalslider.appendChild(stackdiv);
+
+      const imgBgDiv = createDivwClass("product-img bg-img");
+      imgBgDiv.style = `background-image: url("${stack.Item.SellableImagePath}")`;
+      stackdiv.appendChild(imgBgDiv);
+
+      const prodInfoDiv = createDivwClass("product-info");
+      stackdiv.appendChild(prodInfoDiv);
+
+      buildInfoBeforeSave(stack, prodInfoDiv);
+      if (stack.Item.Products != null && stack.Item.Products.length > 0) {
+        displayOfferProductsInDiv(stack, prodInfoDiv);
+      }
+      // buildProductSection(stack, prodInfoDiv);
+    });
+  }
+
 }
 
+function buildAddToCartButton(infoSection, stack) {
+  let purchasebutton = document.createElement("input");
+  purchasebutton.value = "Purchase";
+  purchasebutton.type = "submit";
+  purchasebutton.id = "#add-to-cart-btn";
+  infoSection.appendChild(document.createElement("br"));
+  infoSection.appendChild(document.createElement("br"));
+  infoSection.appendChild(purchasebutton);
+  purchasebutton.addEventListener("click", () => {
+    tryAddToCart(url, STACK_ID, SELLABLE_ID, stack, 1);
+  });
+}
+
+
 function buildProductSection(itemStack, customerSection) {
+  console.log(itemStack);
   let productsSection = document.createElement("section");
   productsSection.classList.add("section");
 
@@ -115,8 +210,8 @@ function buildProductSection(itemStack, customerSection) {
   document.body.insertBefore(productsSection, customerSection);
 }
 
-function sendToDetail(stack) {
-  window.location.href = `../toydetail/toydetail.html?id='${stack.SellableId}'`;
+function sendToDetail(item) {
+  window.location.href = `../toydetail/toydetail.html?sellableid=${item.SellableId}`;
   console.log("clicked: " + stack.SellableName);
 }
 
@@ -131,6 +226,15 @@ function buildInfoAfterSave(itemStack, infoSection) {
   infoSection.appendChild(tagTitleSn);
   infoSection.appendChild(document.createElement("br"));
   infoSection.appendChild(tagDiv);
+
+  if (itemStack.location != undefined) {
+    let fromInfo = createSpanwClass("info-title", "From: ");
+    let fromDesc = createSpanwClass("info-desc", itemStack.location.LocationName);
+    infoSection.appendChild(document.createElement("br"));
+    infoSection.appendChild(document.createElement("br"));
+    infoSection.appendChild(fromInfo);
+    infoSection.appendChild(fromDesc);
+  }
 }
 
 function buildInfoBeforeSave(itemStack, infoSection) {
@@ -147,6 +251,7 @@ function buildInfoBeforeSave(itemStack, infoSection) {
     "$" + itemStack.Item.SellablePrice
   );
 
+
   infoSection.appendChild(nameTitleSn);
   infoSection.appendChild(nameDescSn);
   infoSection.appendChild(document.createElement("br"));
@@ -159,6 +264,18 @@ function buildInfoBeforeSave(itemStack, infoSection) {
   infoSection.appendChild(priceDescSn);
   infoSection.appendChild(document.createElement("br"));
   infoSection.appendChild(document.createElement("br"));
+  if (itemStack.Count != undefined) {
+    let stockTitleSn = createSpanwClass("info-title", "Left in stock: ");
+    let stockDescSn = createSpanwClass(
+      "info-desc",
+      itemStack.Count
+    );
+    infoSection.appendChild(stockTitleSn);
+    infoSection.appendChild(stockDescSn);
+    infoSection.appendChild(document.createElement("br"));
+    infoSection.appendChild(document.createElement("br"));
+  }
+
 }
 
 function displayOfferProductsInDiv(stack, infoDiv) {
@@ -190,6 +307,8 @@ function createMainProductImg(itemStack) {
 
   imgSection.appendChild(imgHolderDiv);
   imgHolderDiv.appendChild(imgBgDiv);
+
+
 }
 
 function createDivwClass(classList) {

@@ -85,7 +85,6 @@ function DisplayOfferList() {
 
   for (let i = 0; i < stackList.length; i++) {
     stack = stackList[i];
-    console.log("alo?");
     console.log(stack);
     ({
       cardDiv,
@@ -106,9 +105,9 @@ function DisplayOfferList() {
     );
     // console.log(stack.Item.Products);
     if (stack.Item.Products != undefined && stack.Item.Products.length > 0) {
-      console.log("item: " + stack.Item.SellableName);
-      console.log("product count: " + stack.Item.Products.length);
-      console.log(stack.Item.Products);
+      // console.log("item: " + stack.Item.SellableName);
+      // console.log("product count: " + stack.Item.Products.length);
+      // console.log(stack.Item.Products);
       displayOfferProductsInDiv(stack, infoDiv);
     }
     displayAfterOfferSave(infoDiv, stack, span, tagDiv);
@@ -160,7 +159,7 @@ function displayBeforeOfferSave(
 }
 
 function sendToDetail(stack) {
-  window.location.href = `toydetail/toydetail.html?id=${stack.Item.SellableId}`;
+  window.location.href = `toydetail/toydetail.html?stackId=${stack.SellableStackId}`;
   console.log("clicked: " + stack.Item.SellableName);
 }
 

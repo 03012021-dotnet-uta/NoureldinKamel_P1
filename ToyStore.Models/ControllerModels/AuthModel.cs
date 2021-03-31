@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Cryptography;
 
-namespace ToyStore.Models.DBModels
+namespace ToyStore.Models.ControllerModels
 {
     /// <summary>
     /// This model is just for receiving user data from the all authentication methods or routes

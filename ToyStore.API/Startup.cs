@@ -33,15 +33,14 @@ namespace ToyStore.API
         public void ConfigureServices(IServiceCollection services)
         {
             string connectionString = Configuration.GetConnectionString("ToysDb");
-            services.AddDbContext<DbContextClass>(options =>
-            {
-                options.UseSqlServer(connectionString);
-            });
+            services.AddDbContext<DbContextClass>(options => options.UseSqlServer(connectionString));
 
             // todo: add scoped stuff here
             services.AddScoped<SellableLogic>();
             services.AddScoped<ToyRepository>();
+            services.AddScoped<OrderLogic>();
             // services.AddScoped<Authenticator>();
+            services.AddSingleton<Authenticator>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

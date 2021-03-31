@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Cryptography;
+using ToyStore.Models.ControllerModels;
 
 namespace ToyStore.Models.DBModels
 {
@@ -56,7 +57,8 @@ namespace ToyStore.Models.DBModels
         /// This represents the cart and the items in the customer's cart
         /// </summary>
         /// <value></value>
-        public Order CurrentOrder { get; set; }
+        public Order? CurrentOrder { get; set; }
+        public Guid? CurrentOrderId { get; set; }
 
         private int MIN_PASS_LENGTH = 8;
 

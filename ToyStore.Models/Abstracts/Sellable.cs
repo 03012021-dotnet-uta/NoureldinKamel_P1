@@ -60,6 +60,12 @@ namespace ToyStore.Models.Abstracts
         /// <value></value>
         public List<Sellable> Products { get; set; }
 
+        /// <summary>
+        /// The stacks that this product is currently associated with
+        /// </summary>
+        /// <value></value>
+        public List<SellableStack> CurrentStacks { get; set; }
+
         public override string ToString()
         {
             return this.SellableName;

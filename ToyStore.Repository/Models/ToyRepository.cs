@@ -6,17 +6,40 @@ using ToyStore.Models.Abstracts;
 using ToyStore.Models.Interfaces;
 using System.Collections.Generic;
 using System.ComponentModel;
+using ToyStore.Models.ControllerModels;
 
 namespace ToyStore.Repository.Models
 {
     public class ToyRepository
     {
+
+        private DbContextClass _db;
+
+
+        public ToyRepository(DbContextClass _db)
+        {
+            this._db = _db;
+        }
+
         public ToyRepository()
         {
-
         }
+
+        // public ToyRepository()
+        // {
+
+        // }
+
         /* #region Authentications */
 
+        /// <summary>
+        /// checks if a customer with the same username exists.
+        /// then check if passwords match.
+        /// returns true if successful.
+        /// </summary>
+        /// <param name="authModel"></param>
+        /// <param name="customer"></param>
+        /// <returns></returns>
         public bool Login(AuthModel authModel, out Customer customer)
         {
             customer = null;
@@ -24,7 +47,14 @@ namespace ToyStore.Repository.Models
             {
                 using (var db = new DbContextClass())
                 {
-                    customer = db.Customers.Where(c => c.CustomerUName == authModel.Username).First();
+                    customer = db.Customers
+                    .Where(c => c.CustomerUName == authModel.Username)
+                    .Include(c => c.FinishedOrders)
+                    .ThenInclude(o => o.cart)
+                    .Include(c => c.CurrentOrder)
+                    .ThenInclude(o => o.cart)
+                    .ThenInclude(s => s.Item)
+                    .First();
                 }
                 if (customer.ComparePasswords(authModel.Password))
                 {
@@ -41,7 +71,14 @@ namespace ToyStore.Repository.Models
             return false;
         }
 
-
+        /// <summary>
+        /// check if username exists, if not, add a new customer 
+        /// with the received information to the db. <br/>
+        /// returns true if successful
+        /// </summary>
+        /// <param name="authModel"></param>
+        /// <param name="customerOut"></param>
+        /// <returns></returns>
         public bool Register(AuthModel authModel, out Customer customerOut)
         {
             customerOut = null;
@@ -82,6 +119,12 @@ namespace ToyStore.Repository.Models
 
         /* #endregion */
 
+        /// <summary>
+        /// Add a new tag to the db. <br/>
+        /// returns true if success
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public bool AddTag(string name)
         {
             try
@@ -115,7 +158,8 @@ namespace ToyStore.Repository.Models
         /* #region Order Management */
 
         /// <summary>
-        /// Add a new order to the DB
+        /// Add a new order to the DB. <br/>
+        /// returns true if success.
         /// </summary>
         /// <param name="order"></param>
         /// <returns>true if success</returns>
@@ -129,59 +173,70 @@ namespace ToyStore.Repository.Models
         }
 
         /// <summary>
-        /// Save all current customer changes
+        /// Save all current customer changes. <br/>
+        /// returns true if success.
         /// </summary>
         /// <param name="customer"></param>
         /// <returns>true if success</returns>
         public bool SaveCustomerChanges(Customer customer)
         {
-            using (var db = new DbContextClass())
+            // using (var db = new DbContextClass())
             {
-                if (!db.Orders.Contains(customer.CurrentOrder))
+                if (!_db.Orders.Contains(customer.CurrentOrder))
                 {
                     SaveNewOrder(customer.CurrentOrder);
                 }
                 else
                 {
-                    var cart = customer.CurrentOrder.cart;
-                    foreach (var pair in cart)
+                    // var newCart = customer.CurrentOrder.cart;
+                    var newOrder = customer.CurrentOrder;
+                    var oldOrder = _db.Orders.Where(o => o.OrderId == newOrder.OrderId).FirstOrDefault();
+                    foreach (var oldStack in oldOrder.cart)
                     {
-                        // if (!db.Sellables.Contains(pair.Key))
+                        if (!newOrder.cart.Contains(oldStack))
+                        {
+                            // removeStackFromOrder(oldOrder, oldStack);
+                        }
+                    }
+                    foreach (var newStack in newOrder.cart)
+                    {
+                        // if (!_db.Sellables.Contains(pair.Key))
                         // {
-                        //     // db.Add(pair.)
+                        //     // _db.Add(pair.)
                         // }
+                        // if () { }
                     }
                     // customer.CurrentOrder.cart.ForEach(pizza =>
                     // {
-                    // if (!db.Pizzas.Contains(pizza))
+                    // if (!_db.Pizzas.Contains(pizza))
                     // {
-                    //     db.Pizzas.Add(pizza);
+                    //     _db.Pizzas.Add(pizza);
                     // }
                     // else
                     // {
                     //     pizza.ToppingList.ForEach(topping =>
                     //     {
-                    //         if (!db.Toppings.Contains(topping))
+                    //         if (!_db.Toppings.Contains(topping))
                     //         {
-                    //             db.Toppings.Add(topping);
+                    //             _db.Toppings.Add(topping);
                     //         }
                     //     });
-                    //     if (!db.Crusts.Contains(pizza.PizzaCrust))
+                    //     if (!_db.Crusts.Contains(pizza.PizzaCrust))
                     //     {
-                    //         db.Crusts.Add(pizza.PizzaCrust);
+                    //         _db.Crusts.Add(pizza.PizzaCrust);
                     //     }
-                    //     if (!db.Sizes.Contains(pizza.PizzaSize))
+                    //     if (!_db.Sizes.Contains(pizza.PizzaSize))
                     //     {
-                    //         db.Sizes.Add(pizza.PizzaSize);
+                    //         _db.Sizes.Add(pizza.PizzaSize);
                     //     }
                     // }
                     // });
-                    db.SaveChanges();
+                    _db.SaveChanges();
                 }
                 try
                 {
-                    db.Update(customer.CurrentOrder);
-                    db.Update(customer);
+                    _db.Update(customer.CurrentOrder);
+                    _db.Update(customer);
                 }
                 catch (Microsoft.EntityFrameworkCore.DbUpdateException e)
                 {
@@ -191,33 +246,183 @@ namespace ToyStore.Repository.Models
                 {
                     Console.WriteLine("an error occurred while saving your changes: " + e.Message + "\n" + e.StackTrace);
                 }
-                return db.SaveChanges() > 0;
+                return _db.SaveChanges() > 0;
+                // }
             }
         }
 
         /// <summary>
         /// Removes a sellable item from an order.
+        /// adds the count back to the store stack.
         /// The change is done in the database.
         /// </summary>
         /// <param name="order"></param>
         /// <param name="sellable"></param>
         /// <returns>true if success</returns>
-        public bool RemoveSellableFromOrder(Order order, Sellable sellable)
+        public bool RemoveSellableStackFromOrder(Order order, SellableStack stack)
         {
-            // using (var db = new DbContextClass())
-            // {
-            //     if (!db.Orders.Contains(order))
-            //     {
-            //         return true;
-            //     }s
-            //     if (!db.Sellables.Contains(sellable))
-            //     {
-            return true;
-            //     }
-            //     db.Sellables.Remove(sellable);
-            //     return db.SaveChanges() > 0;
-            // }
+            var location = stack.location;
+            var locationStack = _db.SellableStacks
+                .Where(s => s.location.LocationId == location.LocationId)
+                .Where(s => s.order == null)
+                .Include(s => s.location)
+                .FirstOrDefault();
+
+            var purchasedCount = stack.Count;
+            locationStack.Count += purchasedCount;
+            if (_removeStack(stack))
+            {
+                return _db.SaveChanges() > 0;
+            }
+            return false;
         }
+
+        /// <summary>
+        /// just removes a stack from the database.
+        /// </summary>
+        /// <param name="stack"></param>
+        /// <returns>true if success</returns>
+        private bool _removeStack(SellableStack stack)
+        {
+            _db.SellableStacks.Remove(stack);
+            return _db.SaveChanges() > 0;
+        }
+
+
+        /// <summary>
+        /// Adds a new stack to the customer order.<br/>
+        /// makes sure customer has an order first
+        /// then gets the stack from the store
+        /// decrement its count by the purchased count
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <param name="purchasedStack"></param>
+        /// <returns></returns>
+        public bool AddSellableStackToCustomerOrder(Customer customer, SellableStack purchasedStack)
+        {
+            customer = _db.Customers.Where(c => c.CustomerId == customer.CustomerId)
+            .Include(c => c.CurrentOrder)
+            .ThenInclude(o => o.cart)
+            .ThenInclude(s => s.Item)
+            .FirstOrDefault();
+            if (customer.CurrentOrder == null)
+            {
+                customer.CurrentOrder = new Order()
+                {
+                    OrderId = Guid.NewGuid(),
+                    cart = new HashSet<SellableStack>()
+                };
+            }
+            else if (customer.CurrentOrder.cart == null)
+            {
+                customer.CurrentOrder.cart = new HashSet<SellableStack>();
+            }
+            if (!_db.Orders.Contains(customer.CurrentOrder))
+            {
+                var order = _createNewDBOrder(customer.CurrentOrder);
+                if (order == null)
+                {
+                    return false;
+                }
+                customer.CurrentOrder = order;
+            }
+            var purchasedCount = purchasedStack.Count;
+
+            // get stack representing stock of the location to decrement its count
+            SellableStack locationStack = GetAllSellableStacks(purchasedStack.location.LocationId, purchasedStack.SellableStackId);
+            System.Console.WriteLine(locationStack.Item.SellableName);
+            if (locationStack.Count < purchasedCount)
+            {
+                System.Console.WriteLine("\tCustom Error: can't decrement stack count");
+                System.Console.WriteLine("\t\tstore count: " + locationStack.Count + " Customer wants: " + locationStack.Count);
+                return false;
+            }
+            locationStack.Count -= purchasedCount;
+            if (_db.SaveChanges() <= 0)
+            {
+                return false;
+            }
+            var newPurchasedProduct = _db.Sellables.Where(s => s.SellableId == purchasedStack.Item.SellableId).FirstOrDefault();
+            var dbLocation = _db.Locations.Where(s => s.LocationId == purchasedStack.location.LocationId).FirstOrDefault();
+            var customerStack = new SellableStack()
+            {
+                Count = purchasedCount,
+                Item = newPurchasedProduct,
+                location = dbLocation,
+                locationId = dbLocation.LocationId,
+                order = customer.CurrentOrder,
+            };
+            if (purchasedStack.Item.CurrentStacks == null)
+                purchasedStack.Item.CurrentStacks = new List<SellableStack>();
+            newPurchasedProduct.CurrentStacks.Add(customerStack);
+            _db.SaveChanges();
+            // _db.SellableStacks.Add(customerStack);
+            if (_db.SaveChanges() <= 0)
+            {
+                return false;
+            }
+            customer.CurrentOrder.cart.Add(customerStack);
+            customer.CurrentOrder.OrderLocation = dbLocation;
+            // purchasedStack.SellableStackId = Guid.NewGuid();
+            // customer.CurrentOrder.cart.Add(customerStack);
+            // _db.Update(purchasedStack);
+            // _db.Update(customer);
+            // _db.Update(customer.CurrentOrder);
+            return _db.SaveChanges() > 0;
+        }
+
+
+        /// <summary>
+        /// saves the new order in the database. <br/>
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns>returns the new order from the database</returns>
+        private Order _createNewDBOrder(Order order)
+        {
+            _db.Add(order);
+            _db.SaveChanges();
+            return _db.Orders.Where(o => o.OrderId == order.OrderId).FirstOrDefault();
+        }
+
+
+        /// <summary>
+        /// compares the customer's current order in the database
+        /// with that of new one that was sent here. <br/>
+        /// it checks to see if the required amount is not more than
+        /// or less than what the user can have
+        /// max is store stock and min is 1. <br/>
+        /// Then if everything is ok it updates the store stock
+        /// and then updates the user order stock.
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <param name="newOrder"></param>
+        /// <param name="stackwNewCount"></param>
+        /// <returns>true if success</returns>
+        public bool ChangeSellablStackCountInCustomerOrder(Customer customer, Order newOrder, SellableStack stackwNewCount)
+        {
+            Order oldOrder = customer.CurrentOrder;
+            int newStackCount = stackwNewCount.Count;
+            if (newStackCount > 0 && oldOrder != null)
+            {
+                // get the store stack
+                SellableStack locationItemStack = GetAllSellableStackswItemId(stackwNewCount.location.LocationId, stackwNewCount.Item.SellableId).FirstOrDefault();
+                // get the stack in current order
+                SellableStack oldStack = oldOrder.cart.Where(s => s.SellableStackId == stackwNewCount.SellableStackId).FirstOrDefault();
+                if (oldStack != null && locationItemStack != null)
+                {
+                    int oldStackCount = oldStack.Count;
+                    int storeStackStock = locationItemStack.Count;
+                    if (newStackCount > storeStackStock)
+                    {
+                        oldStack.Count = newStackCount;
+                        return _db.SaveChanges() > 0;
+                    }
+                }
+
+            }
+            return false;
+        }
+
 
         /// <summary>
         /// Check out a customer <br/>
@@ -229,6 +434,7 @@ namespace ToyStore.Repository.Models
         /// <returns>true if successful</returns>
         public bool CheckoutCustomer(Customer customer, Order order)
         {
+            throw new NotImplementedException();
             using (var db = new DbContextClass())
             {
                 customer.CurrentOrder = null;
@@ -250,32 +456,118 @@ namespace ToyStore.Repository.Models
 
         /* #endregion */
 
-        // private bool HasProducts(Sellable sellable)
+        /// <summary>
+        /// Returns a list of all stacks available at a location. <br/>
+        /// Searches for stacks with the particular Item.
+        /// by default doesn't return stacks that are in an order
+        /// </summary>
+        /// <param name="locationId"></param>
+        /// <param name="anywhere"></param>
+        /// <returns></returns>
+        public List<SellableStack> GetAllSellableStackswItemId(Guid locationId, Guid sellableId, bool anywhere = false)
+        {
+            List<SellableStack> stackList = new List<SellableStack>();
+
+            stackList = _db.SellableStacks
+                .Where(stack => stack.location.LocationId == locationId)
+                .Where(stack => anywhere || stack.order == null)
+                .Where(stack => stack.Item.SellableId == sellableId)
+                .Include(stack => stack.Item)
+                .ThenInclude(sel => sel.Tags)
+                .Include(stack => stack.Item)
+                .ThenInclude(sel => sel.Products)
+                .ThenInclude(sel => sel.Tags)
+                .Include(s => s.location)
+                .Include(s => s.order)
+                .ToList();
+            return stackList;
+        }
+
+
+        /// <summary>
+        /// Get the stack with specific id at specific location
+        /// </summary>
+        /// <param name="locationId"></param>
+        /// <param name="stackId"></param>
+        /// <param name="anywhere"></param>
+        /// <returns></returns>
+        public SellableStack GetAllSellableStacks(Guid locationId, Guid stackId, bool anywhere = false)
+        {
+            // List<SellableStack> stackList = new List<SellableStack>();
+
+            var stackList = _db.SellableStacks
+                .Where(stack => stack.location.LocationId == locationId)
+                .Where(stack => anywhere || stack.order == null)
+                .Where(stack => stack.SellableStackId == stackId)
+                .Include(stack => stack.Item)
+                .ThenInclude(sel => sel.Tags)
+                .Include(stack => stack.Item)
+                .ThenInclude(sel => sel.Products)
+                .ThenInclude(sel => sel.Tags)
+                .Include(s => s.location)
+                .Include(s => s.order)
+                .FirstOrDefault();
+            return stackList;
+        }
+
+
+        /// <summary>
+        /// Returns a list of all stacks available at a location. <br/>
+        /// by default doesn't return stacks that are in an order
+        /// </summary>
+        /// <param name="locationId"></param>
+        /// <param name="anywhere"></param>
+        /// <returns></returns>
+        public List<SellableStack> GetAllSellableStacksInLocationId(Guid locationId, bool anywhere = false)
+        {
+            List<SellableStack> stackList = new List<SellableStack>();
+
+            var locationList = _db.SellableStacks
+                .Where(stack => stack.location.LocationId == locationId)
+                .Where(stack => anywhere || stack.order == null)
+                .Include(stack => stack.Item)
+                .ThenInclude(sel => sel.Tags)
+                .Include(stack => stack.Item)
+                .ThenInclude(sel => sel.Products)
+                .ThenInclude(sel => sel.Tags)
+                .Include(s => s.location)
+                .Include(s => s.order)
+                .ToList();
+            return stackList;
+        }
+
+        // /// <summary>
+        // /// Returns a list of all stacks available at a location. <br/>
+        // /// by default doesn't return stacks that are in an order
+        // /// </summary>
+        // /// <param name="locationId"></param>
+        // /// <param name="anywhere"></param>
+        // /// <returns></returns>
+        // public List<SellableStack> GetAllSellableStacksInLocationId(Guid locationId, bool anywhere = false)
         // {
-        //     try
-        //     {
-        //         using (var db = new DbContextClass())
-        //         {
-        //             // db.Sellables.Where(s => s.SellableId == sellable.SellableId).Include();
-        //         }
-        //         Console.WriteLine("test" + "YES");
-        //         return true;
-        //     }
-        //     catch (System.Exception)
-        //     {
-        //         Console.WriteLine("test" + "nope");
-        //         return false;
-        //     }
+        //     List<SellableStack> stackList = new List<SellableStack>();
+
+        //     var locationList = _db.SellableStacks
+        //         .Where(stack => stack.location.LocationId == locationId)
+        //         .Where(stack => anywhere || stack.order == null)
+        //         .Include(stack => stack.Item)
+        //         .ThenInclude(sel => sel.Tags)
+        //         .Include(stack => stack.Item)
+        //         .ThenInclude(sel => sel.Products)
+        //         .ThenInclude(sel => sel.Tags)
+        //         .Include(s => s.location)
+        //         .Include(s => s.order)
+        //         .ToList();
+        //     return stackList;
         // }
 
-
-        public List<SellableStack> GetAllSellableItems()
+        public List<SellableStack> GetAllSellableStacks()
         {
             List<SellableStack> stackList = new List<SellableStack>();
             using (var db = new DbContextClass())
             {
                 var locationList = db.Locations
-                    .Include(l => l.LocationInventory)
+                    .Include(l => l.LocationInventory.Where(s => s.order == null))
                     .ThenInclude(stack => stack.Item)
                     .ThenInclude(st => st.Tags)
                     .Include(l => l.LocationInventory)
@@ -298,6 +590,7 @@ namespace ToyStore.Repository.Models
                         location.LocationInventory.ToList().ForEach(stack =>
                         {
                             System.Console.WriteLine("test: " + stack.Item);
+
                             // Console.WriteLine("test: " + stack.Item.SellableName + " " + stack.Item.Products[0].SellableName);
 
                             // if (stack.Item.CurrentOffer != null)
@@ -310,7 +603,8 @@ namespace ToyStore.Repository.Models
                             //         System.Console.WriteLine("test: product added: " + o.Products[0]);
                             //     }
                             // }
-                            stackList.Add(stack);
+                            if (stack.order == null)
+                                stackList.Add(stack);
                             // db.SellableStacks
                             // .Where(stack => stack.SellableStackId == stack.SellableStackId)
                             // .Include(st => st.Item)
@@ -425,31 +719,90 @@ namespace ToyStore.Repository.Models
             // };
         }
 
+        /// <summary>
+        /// get the first stack with this sellable id in it
+        /// </summary>
+        /// <param name="sellableId"></param>
+        /// <returns></returns>
+        public SellableStack GetStackwithSellableId(Guid sellableId, bool instore = true)
+        {
+            SellableStack stack = null;
+            using (var db = new DbContextClass())
+            {
+                stack = db.SellableStacks
+                .Where(s => s.Item.SellableId == sellableId)
+                .Where(s => !instore || s.order == null)
+                .Include(stack => stack.Item)
+                .ThenInclude(sel => sel.Tags)
+                .Include(stack => stack.Item)
+                .ThenInclude(sel => sel.Products)
+                .ThenInclude(sel => sel.Tags)
+                .Include(s => s.location)
+                .Include(s => s.order)
+                .FirstOrDefault();
 
-        public List<Customer> GetCustomersWhoBoughtStack(Guid id)
+            }
+            return stack;
+        }
+
+
+        /// <summary>
+        /// Get the customers that bought this product id or sellable id
+        /// </summary>
+        /// <param name="sellableId"></param>
+        /// <returns></returns>
+        public List<Customer> GetCustomersWhoBoughtStack(Guid sellableId)
         {
             List<Customer> customers = new List<Customer>();
             using (var db = new DbContextClass())
             {
-                customers = db.Customers.Include(c => c.FinishedOrders.Where(or => or.cart.Any(stack => stack.SellableStackId == id))).ToList();
+                customers = db.Customers.Where(c => c.FinishedOrders.Any(o => o.cart.Any(s => s.Item.SellableId == sellableId)))
+                .Include(c => c.FinishedOrders.Where(o => o.cart.Any(s => s.Item.SellableId == sellableId)))
+                .ThenInclude(o => o.cart.Where(s => s.Item.SellableId == sellableId))
+                .ToList();
+                customers.ForEach(c =>
+                {
+                    System.Console.WriteLine("c.FirstName");
+                    System.Console.WriteLine(c.FirstName);
+                    c.FinishedOrders.ForEach(Order =>
+                    {
+                        Order.cart.ToList().ForEach(stack =>
+                        {
+                            System.Console.WriteLine("customers of a stack...");
+                            System.Console.WriteLine(c.FirstName);
+                            System.Console.WriteLine(stack.Item.SellableName);
+                        });
+                    });
+                });
             }
             return customers;
         }
 
-        public SellableStack GetSellableByIdDb(Guid id)
+
+        /// <summary>
+        /// Get the stack with the exact id. <br/>
+        /// but makes sure by default that it is not in any store.
+        /// </summary>
+        /// <param name="stackId"></param>
+        /// <returns></returns>
+        public SellableStack GetSellableStackByIdDb(Guid stackId, bool instore = true)
         {
             SellableStack stack = null;
             using (var db = new DbContextClass())
             {
                 try
                 {
-                    stack = db.SellableStacks.Where(s => s.Item.SellableId == id)
-                        .Include(stack => stack.Item)
-                        .ThenInclude(sel => sel.Tags)
-                        .Include(stack => stack.Item)
-                        .ThenInclude(sel => sel.Products)
-                        .ThenInclude(sel => sel.Tags)
-                        .First();
+                    stack = db.SellableStacks
+                    .Where(s => s.SellableStackId == stackId)
+                    .Where(s => !instore || s.order == null)
+                    .Include(stack => stack.Item)
+                    .ThenInclude(sel => sel.Tags)
+                    .Include(stack => stack.Item)
+                    .ThenInclude(sel => sel.Products)
+                    .ThenInclude(sel => sel.Tags)
+                    .Include(s => s.location)
+                    .Include(s => s.order)
+                    .First();
                     // db.Entry(stack.Item).Collection(s => s.Products).Load();
                 }
                 catch (System.Exception e)
@@ -460,13 +813,41 @@ namespace ToyStore.Repository.Models
             return stack;
         }
 
+
+        /// <summary>
+        /// This method returns all the stacks in the database. <br/>
+        /// and by default returns ones that are not in a customer order.
+        /// </summary>
+        /// <param name="sellableId"></param>
+        /// <param name="instore"></param>
+        /// <returns></returns>
+        public List<SellableStack> GetSellableStacksWithItem(Guid sellableId, bool instore = true)
+        {
+            List<SellableStack> sellableStacks = null;
+            using (var db = new DbContextClass())
+            {
+                sellableStacks = db.SellableStacks
+                .Where(stack => stack.Item.SellableId == sellableId)
+                .Where(s => !instore || s.order == null)
+                .Include(stack => stack.Item)
+                .ThenInclude(sel => sel.Tags)
+                .Include(stack => stack.Item)
+                .ThenInclude(sel => sel.Products)
+                .ThenInclude(sel => sel.Tags)
+                .Include(s => s.location)
+                .Include(s => s.order)
+                .ToList();
+            }
+            return sellableStacks;
+        }
+
         public HashSet<Tag> GetAvailableTags()
         {
             var stackList = new List<SellableStack>();
             var tagSet = new HashSet<Tag>();
             using (var db = new DbContextClass())
             {
-                stackList = GetAllSellableItems();
+                stackList = GetAllSellableStacks();
             }
             if (stackList != null)
             {
@@ -485,10 +866,10 @@ namespace ToyStore.Repository.Models
             return tagSet;
         }
 
-        public List<SellableStack> GetSellablesByTag(Tag neededTag)
+        public List<SellableStack> GetSellableStacksByTag(Tag neededTag)
         {
             var tagSellables = new List<SellableStack>();
-            var allSellableStacks = GetAllSellableItems();
+            var allSellableStacks = GetAllSellableStacks();
             if (allSellableStacks != null && allSellableStacks.Count != 0)
             {
                 tagSellables = allSellableStacks.Where(stack => stack.GetTags().Any(t => t.TagName == neededTag.TagName)).ToList();
@@ -500,7 +881,7 @@ namespace ToyStore.Repository.Models
             return tagSellables;
         }
 
-        private static void PrintError(Exception e)
+        private void PrintError(Exception e)
         {
             Console.WriteLine("error: " + e.Message + "\n" + e.StackTrace);
         }
@@ -1023,7 +1404,6 @@ namespace ToyStore.Repository.Models
         // // }
 
         /* #endregion */
-
 
     }
 }

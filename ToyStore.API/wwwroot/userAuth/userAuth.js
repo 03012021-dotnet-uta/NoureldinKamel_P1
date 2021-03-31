@@ -1,5 +1,6 @@
-const urlParams = new URLSearchParams(window.location.search);
-let receivedUrl = urlParams.get("from");
+// const urlParams = new URLSearchParams(window.location.search);
+// let receivedUrl = urlParams.get("from");
+const receivedUrl = window.localStorage.getItem("from");
 // receivedUrl = receivedUrl.slice(1, -1);
 console.log('from: ')
 console.log(receivedUrl);
@@ -142,8 +143,25 @@ function showErrorDiv(message, id) {
 function redirect(url, token) {
   // window.location.pathname.href = `https://localhost:5001/${url}?token=${token}`
   // document.cookie = `token = ${token}; SameSite = 'Lax';`;
-  window.localStorage.setItem("token", token)
-  window.location.href = `https://localhost:5001${url}`
+  window.localStorage.setItem("token", token);
+  let args = window.localStorage.getItem("args");
+  if (args != undefined) {
+    let toyIdPair = JSON.parse(args);
+    // console.log("whole args");
+    // console.log(toyIdPair);
+    toyIdPair = toyIdPair['args'];
+    let toyKey = Object.keys(toyIdPair)[0];
+    // console.log("keys:");
+    // console.log(Object.keys(toyIdPair));
+    if (toyKey != undefined) {
+      let toyId = toyIdPair[toyKey];
+      window.location.href = `https://localhost:5001${url}?${toyKey}=${toyId}`;
+    } else {
+      window.location.href = `https://localhost:5001${url}`;
+    }
+  } else {
+    window.location.href = `https://localhost:5001${url}`;
+  }
 }
 
 function show(element, btn) {

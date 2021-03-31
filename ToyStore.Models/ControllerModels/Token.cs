@@ -1,6 +1,7 @@
 using System;
+using ToyStore.Models.DBModels;
 
-namespace ToyStore.Models.DBModels
+namespace ToyStore.Models.ControllerModels
 {
     public class Token
     {
@@ -39,6 +40,11 @@ namespace ToyStore.Models.DBModels
         public bool CheckExpiration()
         {
             return TokenExpiration > DateTime.Now;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return (obj as Token).TokenValue == this.TokenValue;
         }
     }
 }

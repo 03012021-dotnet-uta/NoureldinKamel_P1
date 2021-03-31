@@ -99,7 +99,30 @@ namespace ToyStore.API.Controllers
             // string y = (string)x.GetValue(obj, null);
             System.Console.WriteLine("hello?: " + k);
             // var oj = id.Property("id");
-            var nameList = sellableLogic.GetSellableById(id);
+            var nameList = sellableLogic.GetStackPageDetails(id);
+            // var ser = Newtonsoft.Json.JsonSerializer.Create(
+            // );
+
+            return JsonConvert.SerializeObject(nameList,
+                 new Newtonsoft.Json.JsonSerializerSettings() { ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore });
+            // return nameList;
+            // return new SellableStack();
+
+        }
+
+
+        [HttpPost("anyDetail")]
+        public string GetAnyProductDetail([FromBody] object obj)
+        {
+            System.Console.WriteLine("hello?: " + obj.ToString());
+            var z = new { id = "" };
+            string k = obj.ToString().Split("\"")[3];
+            var id = new Guid(k);
+            // var x = obj.GetType().GetProperty("id");
+            // string y = (string)x.GetValue(obj, null);
+            System.Console.WriteLine("hello?: " + k);
+            // var oj = id.Property("id");
+            var nameList = sellableLogic.GetAnyStackWithSellableId(id);
             // var ser = Newtonsoft.Json.JsonSerializer.Create(
             // );
 
@@ -114,7 +137,7 @@ namespace ToyStore.API.Controllers
         [HttpPost("customers")]
         public string GetCustomers([FromBody] object obj)
         {
-            System.Console.WriteLine("hello?: " + obj.ToString());
+            System.Console.WriteLine("hello customers?: " + obj.ToString());
             var z = new { id = "" };
             string k = obj.ToString().Split("\"")[3];
             var id = new Guid(k);
@@ -122,7 +145,7 @@ namespace ToyStore.API.Controllers
             // string y = (string)x.GetValue(obj, null);
             System.Console.WriteLine("hello?: " + k);
             // var oj = id.Property("id");
-            var nameList = sellableLogic.GetCustomersForStackWId(id);
+            var nameList = sellableLogic.GetCustomersForSellableWId(id);
             System.Console.WriteLine(nameList);
             // var ser = Newtonsoft.Json.JsonSerializer.Create(
             // );

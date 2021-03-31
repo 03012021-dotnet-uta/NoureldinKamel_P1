@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ToyStore.Repository.Models;
 
 namespace ToyStore.Repository.Migrations
 {
     [DbContext(typeof(DbContextClass))]
-    partial class DbContextClassModelSnapshot : ModelSnapshot
+    [Migration("20210330185436_migration7")]
+    partial class migration7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,7 +70,7 @@ namespace ToyStore.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CurrentOrderId")
+                    b.Property<Guid?>("CurrentOrderOrderId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CustomerPass")
@@ -85,7 +87,7 @@ namespace ToyStore.Repository.Migrations
 
                     b.HasKey("CustomerId");
 
-                    b.HasIndex("CurrentOrderId");
+                    b.HasIndex("CurrentOrderOrderId");
 
                     b.ToTable("Customers");
                 });
@@ -137,22 +139,22 @@ namespace ToyStore.Repository.Migrations
                     b.Property<int>("Count")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("ItemSellableId")
+                    b.Property<Guid?>("ItemSellableId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("LocationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("OrderId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("locationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("SellableStackId");
 
                     b.HasIndex("ItemSellableId");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("LocationId");
 
-                    b.HasIndex("locationId");
+                    b.HasIndex("OrderId");
 
                     b.ToTable("SellableStacks");
                 });
@@ -203,7 +205,7 @@ namespace ToyStore.Repository.Migrations
                 {
                     b.HasOne("ToyStore.Models.DBModels.Order", "CurrentOrder")
                         .WithMany()
-                        .HasForeignKey("CurrentOrderId");
+                        .HasForeignKey("CurrentOrderOrderId");
 
                     b.Navigation("CurrentOrder");
                 });
@@ -226,18 +228,16 @@ namespace ToyStore.Repository.Migrations
             modelBuilder.Entity("ToyStore.Models.DBModels.SellableStack", b =>
                 {
                     b.HasOne("ToyStore.Models.Abstracts.Sellable", "Item")
-                        .WithMany("CurrentStacks")
-                        .HasForeignKey("ItemSellableId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("ItemSellableId");
+
+                    b.HasOne("ToyStore.Models.DBModels.Location", "location")
+                        .WithMany("LocationInventory")
+                        .HasForeignKey("LocationId");
 
                     b.HasOne("ToyStore.Models.DBModels.Order", "order")
                         .WithMany("cart")
                         .HasForeignKey("OrderId");
-
-                    b.HasOne("ToyStore.Models.DBModels.Location", "location")
-                        .WithMany("LocationInventory")
-                        .HasForeignKey("locationId");
 
                     b.Navigation("Item");
 
@@ -248,8 +248,6 @@ namespace ToyStore.Repository.Migrations
 
             modelBuilder.Entity("ToyStore.Models.Abstracts.Sellable", b =>
                 {
-                    b.Navigation("CurrentStacks");
-
                     b.Navigation("Products");
                 });
 

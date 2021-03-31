@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using ToyStore.Models.Abstracts;
 
+#nullable enable
 namespace ToyStore.Models.DBModels
 {
     /// <summary>
@@ -31,6 +32,22 @@ namespace ToyStore.Models.DBModels
         /// </summary>
         /// <value></value>
         public int Count { get; set; }
+
+        /// <summary>
+        /// The location if this stack is an inventory of a store
+        /// if not the store is null;
+        /// </summary>
+        /// <value></value>
+        public Location? location { get; set; }
+        public Guid? locationId { get; set; }
+
+        /// <summary>
+        /// The order that this stack is in if it is in a currentorder
+        /// or in a finished order of a customer
+        /// </summary>
+        /// <value></value>
+        public Order? order { get; set; }
+        // public Guid? orderId { get; set; }
 
         public List<Tag> GetTags()
         {

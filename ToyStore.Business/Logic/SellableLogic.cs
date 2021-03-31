@@ -10,31 +10,38 @@ namespace ToyStore.Business.Logic
 {
     public class SellableLogic
     {
-        private readonly ToyRepository toyRepository;
+        private readonly ToyRepository _toyRepository;
         public SellableLogic(ToyRepository toyRepository)
         {
-            this.toyRepository = toyRepository;
+            this._toyRepository = toyRepository;
         }
-        public List<SellableStack> GetSellableItemsWithTag(Tag tag)
+        public List<SellableStack> GetSellableStacksWithTag(Tag tag)
         {
-            return toyRepository.GetSellablesByTag(tag);
+            return _toyRepository.GetSellableStacksByTag(tag);
         }
 
         public List<Tag> GetAvailableTags()
         {
-            return toyRepository.GetAvailableTags().ToList();
+            return _toyRepository.GetAvailableTags().ToList();
         }
 
         public List<SellableStack> GetAllSellables()
         {
-            var sellableStacks = toyRepository.GetAllSellableItems();
+            var sellableStacks = _toyRepository.GetAllSellableStacks();
             // System.Console.WriteLine(SerializeSellableStackList(sellableStacks));
             return sellableStacks;
         }
 
-        public SellableStack GetSellableById(Guid Id)
+        public object GetStackPageDetails(Guid SellableStackId)
         {
-            return toyRepository.GetSellableByIdDb(Id);
+            var stack = GetSellableStackById(SellableStackId);
+            var alternates = _toyRepository.GetSellableStacksWithItem(stack.Item.SellableId);
+            return new { Stack = stack, Alternatives = alternates };
+        }
+
+        public SellableStack GetSellableStackById(Guid Id)
+        {
+            return _toyRepository.GetSellableStackByIdDb(Id);
         }
 
         public int TestMethod(int i)
@@ -147,9 +154,16 @@ namespace ToyStore.Business.Logic
             return serialized;
         }
 
-        public List<Customer> GetCustomersForStackWId(Guid id)
+        public List<Customer> GetCustomersForSellableWId(Guid id)
         {
-            return toyRepository.GetCustomersWhoBoughtStack(id);
+            return _toyRepository.GetCustomersWhoBoughtStack(id);
+        }
+
+        public object GetAnyStackWithSellableId(Guid sellableId)
+        {
+            var stack = _toyRepository.GetStackwithSellableId(sellableId);
+            var alternates = _toyRepository.GetSellableStacksWithItem(stack.Item.SellableId);
+            return new { Stack = stack, Alternatives = alternates };
         }
 
         private string GetJsonProperty(int depth, string Name, string value, bool vQuotations = true, bool comma = true)
@@ -183,7 +197,7 @@ namespace ToyStore.Business.Logic
 
         public void seedDB()
         {
-            toyRepository.SeedDB();
+            _toyRepository.SeedDB();
         }
     }
 }
