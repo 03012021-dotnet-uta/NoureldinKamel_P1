@@ -300,6 +300,7 @@ namespace ToyStore.Repository.Models
         /// <returns></returns>
         public bool AddSellableStackToCustomerOrder(Customer customer, SellableStack purchasedStack)
         {
+            var dbLocation = _db.Locations.Where(s => s.LocationId == purchasedStack.location.LocationId).FirstOrDefault();
             customer = _db.Customers.Where(c => c.CustomerId == customer.CustomerId)
             .Include(c => c.CurrentOrder)
             .ThenInclude(o => o.cart)
@@ -324,7 +325,9 @@ namespace ToyStore.Repository.Models
                 {
                     return false;
                 }
+                order.OrderLocation = dbLocation;
                 customer.CurrentOrder = order;
+                _db.SaveChanges();
             }
             var purchasedCount = purchasedStack.Count;
 
@@ -343,7 +346,6 @@ namespace ToyStore.Repository.Models
                 return false;
             }
             var newPurchasedProduct = _db.Sellables.Where(s => s.SellableId == purchasedStack.Item.SellableId).FirstOrDefault();
-            var dbLocation = _db.Locations.Where(s => s.LocationId == purchasedStack.location.LocationId).FirstOrDefault();
             var customerStack = new SellableStack()
             {
                 Count = purchasedCount,
