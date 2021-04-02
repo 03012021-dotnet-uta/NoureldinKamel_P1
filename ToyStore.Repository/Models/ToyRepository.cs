@@ -72,6 +72,47 @@ namespace ToyStore.Repository.Models
             return false;
         }
 
+
+        /// <summary>
+        /// checks if a customer with the same username exists.
+        /// then check if passwords match.
+        /// returns true if successful.
+        /// </summary>
+        /// <param name="authModel"></param>
+        /// <param name="customer"></param>
+        /// <returns></returns>
+        public bool LoginTest(AuthModel authModel, out Customer customer)
+        {
+            customer = null;
+            try
+            {
+                using (var db = new DbContextClass())
+                {
+                    customer = _db.Customers
+                    .Where(c => c.CustomerUName == authModel.Username)
+                    .Include(c => c.FinishedOrders)
+                    .ThenInclude(o => o.cart)
+                    .ThenInclude(s => s.Item)
+                    .Include(c => c.CurrentOrder)
+                    .ThenInclude(o => o.cart)
+                    .ThenInclude(s => s.Item)
+                    .First();
+                }
+                if (customer.ComparePasswords(authModel.Password))
+                {
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                PrintError(e);
+                customer = null;
+                return false;
+            }
+            customer = null;
+            return false;
+        }
+
         /// <summary>
         /// This method is not for returning to user. <br/>
         /// This is only for updating the user when validating with token. <br/>
@@ -189,6 +230,60 @@ namespace ToyStore.Repository.Models
                         db.Customers.Add(c);
                         db.SaveChanges();
                         customerOut = db.Customers.Where(cu => cu.CustomerId == c.CustomerId)
+                        .Include(c => c.FinishedOrders)
+                        .ThenInclude(o => o.cart)
+                        .Include(c => c.CurrentOrder)
+                        .ThenInclude(o => o.cart)
+                        .ThenInclude(s => s.Item)
+                        .First();
+                        return true;
+                    }
+                    catch (System.Exception e2)
+                    {
+                        Console.WriteLine("error: " + e2.Message + "\n" + e2.StackTrace);
+                        return false;
+                    }
+                }
+            }
+        }
+
+
+
+        /// <summary>
+        /// check if username exists, if not, add a new customer 
+        /// with the received information to the db. <br/>
+        /// returns true if successful
+        /// </summary>
+        /// <param name="authModel"></param>
+        /// <param name="customerOut"></param>
+        /// <returns></returns>
+        public bool RegisterTest(AuthModel authModel, out Customer customerOut)
+        {
+            customerOut = null;
+            try
+            {
+                using (var db = new DbContextClass())
+                {
+                    _db.Customers.Where(c => c.CustomerUName == authModel.Username).First();
+                }
+                return false;
+            }
+            catch (System.Exception)
+            {
+                using (var db = new DbContextClass())
+                {
+                    var c = new Customer()
+                    {
+                        CustomerUName = authModel.Username,
+                        FirstName = authModel.FirstName,
+                        LastName = authModel.LastName,
+                    };
+                    c.SetPass(authModel.Password);
+                    try
+                    {
+                        _db.Customers.Add(c);
+                        _db.SaveChanges();
+                        customerOut = _db.Customers.Where(cu => cu.CustomerId == c.CustomerId)
                         .Include(c => c.FinishedOrders)
                         .ThenInclude(o => o.cart)
                         .Include(c => c.CurrentOrder)
