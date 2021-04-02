@@ -1065,6 +1065,39 @@ namespace ToyStore.Repository.Models
             return tagSellables;
         }
 
+        public List<SellableStack> GetRecommendedTags(Guid customerId)
+        {
+            List<SellableStack> stacks = new List<SellableStack>();
+            // var customer = _db.Customers.Where(c => c.CustomerId == customerId)
+            // .Include(c => c.FinishedOrders).ThenInclude(o => o.cart).ThenInclude(s => s.Item.Tags)
+            // .ToList();
+            var customerTags = _db.Tags.Include(t => t.TagSellables)
+            .ThenInclude(t => t.CurrentStacks).ThenInclude(s => s.order.OrderedBy)
+            .ToList();
+
+
+            customerTags.ForEach(tag =>
+            {
+                foreach (var sellable in tag.TagSellables)
+                {
+                    foreach (var stack in sellable.CurrentStacks)
+                    {
+                        if (stack == null)
+                        {
+                            System.Console.WriteLine("stack is null");
+                            continue;
+                        }
+                        if (stack.order != null && stack.order.OrderedBy != null && stack.order.OrderedBy.CustomerId == customerId && !stacks.Contains(stack))
+                        {
+                            stacks.Add(stack);
+                        }
+                    }
+                }
+            });
+
+            return stacks;
+        }
+
         private void PrintError(Exception e)
         {
             Console.WriteLine("error: " + e.Message + "\n" + e.StackTrace);

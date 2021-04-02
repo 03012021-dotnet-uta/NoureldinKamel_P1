@@ -154,6 +154,11 @@ namespace ToyStore.Business.Logic
             return serialized;
         }
 
+        public List<SellableStack> GetRecommendedStacks(Guid id)
+        {
+            return _toyRepository.GetRecommendedTags(id);
+        }
+
         public List<Customer> GetCustomersForSellableWId(Guid id)
         {
             return _toyRepository.GetCustomersWhoBoughtStack(id);

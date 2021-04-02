@@ -58,7 +58,8 @@ function checkCanAddOne(input) {
   }
   return false;
 }
-
+let total = 0;
+let totalDiv;
 function buildCartPage(customer, locationStacks) {
   if (
     customer != undefined &&
@@ -68,7 +69,6 @@ function buildCartPage(customer, locationStacks) {
   ) {
     console.log("locationStacks: ");
     console.log(locationStacks);
-    let total = 0;
     Array.from(customer.CurrentOrder.cart).forEach((stack) => {
       const itemDiv = _createDiv("exp-cart-grid");
       cartDiv.appendChild(itemDiv);
@@ -183,10 +183,14 @@ function buildCartPage(customer, locationStacks) {
       itemDiv.appendChild(removeBtn);
     });
 
-    const totalDiv = _createDiv("black-text", "", `Total: $${total}`);
+    totalDiv = _createDiv("black-text", "", `Total: $${total}`);
     cartDiv.appendChild(totalDiv);
 
-    const checkoutBtn = _createDiv("checkout-container", "", "Checkout");
+    const checkoutBtn = _createDiv(
+      "checkout-container",
+      "checkoutbtn",
+      "Checkout"
+    );
     checkoutBtn.addEventListener("click", () => {
       if (!loading) {
         loading = true;
@@ -223,7 +227,18 @@ function removeStack(btn, customer, stack, itemDiv) {
     } else {
       itemDiv.parentElement.removeChild(itemDiv);
       btn.classList.remove("loading");
-      customer.CurrentOrder.cart.remove(stack);
+      // customer.CurrentOrder.cart.remove(stack);
+      let i = Array.from(customer.CurrentOrder.cart).indexOf(stack);
+      Array.from(customer.CurrentOrder.cart).splice(i, 1);
+      if (customer.CurrentOrder.cart.length <= 0) {
+        const btn = document.querySelector("#checkoutbtn");
+        btn.parentElement.removeChild(btn);
+      }
+      let reduced = stack.Item.SellablePrice * stack.Count;
+      console.log("reduced");
+      console.log(reduced);
+      total -= reduced;
+      totalDiv.innerHTML = `Total: $${total}`;
       loading = false;
     }
   };
@@ -285,6 +300,9 @@ function changeStackCount(btn, customer, stack, count, input) {
       console.log(diff);
       input.max = parseInt(input.max) + parseInt(diff);
       stack.Count = parseInt(count);
+      total -= diff * stack.Item.SellablePrice;
+      totalDiv.innerHTML = `Total: $${total}`;
+
       btn.classList.remove("loading");
       console.log(input);
       loading = false;
@@ -350,8 +368,8 @@ function fetchCartChange(url, methood, customer, orderModel, myFunc) {
       console.log(json);
       result = json;
       myFunc(result);
-    })
-    .catch(() => {
-      console.log("caught error");
+      // })
+      // .catch(() => {
+      //   console.log("caught error");
     });
 }

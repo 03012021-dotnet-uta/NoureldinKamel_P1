@@ -35,10 +35,10 @@ function fetchCustomerData() {
       // hide register and login buttons
       // show user name
       CUSTOMER_OBJ = obj;
-      var test = _.cloneDeep(obj);
-      console.log("testing...");
-      test.FirstName = "adsfasdfas  d";
-      console.log(test);
+      // var test = _.cloneDeep(obj);
+      // console.log("testing...");
+      // test.FirstName = "adsfasdfas  d";
+      // console.log(test);
       buildNavBar();
       changeGetStartedToUser(obj);
       buildFloatingCart(obj);
@@ -46,6 +46,7 @@ function fetchCustomerData() {
 
       console.log("from base: ");
       console.log(obj);
+      if (window.location.href.includes("index.html")) GetRecommended(obj);
     })
     .catch(() => {
       buildNavBar();
@@ -174,6 +175,10 @@ function buildFloatingCart(user) {
         "https://localhost:5001/cartDetail/cartDetail.html";
     });
   }
+}
+
+function getCustomer() {
+  return CUSTOMER_OBJ;
 }
 
 function __showErrorPopup(message = "Oops, Something went wrong") {
