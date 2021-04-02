@@ -1,0 +1,128 @@
+:root {
+  --bgColor: #f6f6f6;
+  --white: white;
+  --blue: #56baec;
+  --blue-hover: #39ace7;
+  --text-light: #b6a8a7;
+  --text-dark: #0d0d0d;
+  --link-color: #92badd;
+  --inactive-color: #cccccc;
+}
+
+.section {
+  padding-top: 20pt;
+}
+
+h1 {
+  color: var(--text-dark);
+}
+
+.info-title {
+  color: var(--text-dark);
+}
+
+.user-form {
+  display: grid;
+  grid: auto / auto auto;
+}
+
+input[type="text"]:focus,
+input[type="username"]:focus,
+input[type="password"]:focus {
+  background-color: #fff;
+  border-bottom: 2px solid #5fbae9;
+}
+
+input[type="text"]:placeholder,
+input[type="username"]:placeholder,
+input[type="password"]:placeholder {
+  color: #cccccc;
+}
+
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  background-color: #56baed;
+  border: none;
+  color: white;
+  padding: 15px 80px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  text-transform: uppercase;
+  font-size: 13px;
+  box-shadow: 0 10px 30px 0 rgba(95, 186, 233, 0.4);
+  border-radius: 5px 5px 5px 5px;
+  margin: 5px 20px 40px 20px;
+  transition: all 0.3s ease-in-out;
+}
+
+input[type="button"]:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover {
+  background-color: #39ace7;
+}
+
+input[type="button"]:active,
+input[type="submit"]:active,
+input[type="reset"]:active {
+  transform: scale(0.95);
+}
+
+input[type="text"],
+input[type="username"],
+input[type="password"] {
+  background-color: #f6f6f6;
+  border: none;
+  color: #0d0d0d;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 5px;
+  width: 85%;
+  border: 2px solid var(--link-color);
+  transition: all 0.5s ease-in-out;
+  border-radius: 5px 5px 5px 5px;
+}
+
+.div-scroll {
+  height: 200px;
+  overflow-y: scroll;
+  padding: 5pt 10pt;
+  /* background-color: var(--bgColor); */
+  border-radius: 5pt;
+  /* background-color: var(--blue); */
+}
+
+.order-div {
+  display: grid;
+  grid: auto/auto auto auto auto;
+  padding: 6pt;
+  /* background-color: var(--link-color); */
+  /* border-radius: 5pt; */
+}
+
+.div-scroll::-webkit-scrollbar {
+  height: 10px;
+  /* background-color: white; */
+}
+.div-scroll::-webkit-scrollbar-thumb {
+  height: 10px;
+  background-color: var(--blue);
+}
+
+.logout {
+  color: white;
+  border-radius: 5pt;
+  background-color: red;
+  display: inline-block;
+  padding: 5px;
+  margin-bottom: 10pt;
+  cursor: pointer;
+}
+
+/* .item-name {
+  color: white;
+} */

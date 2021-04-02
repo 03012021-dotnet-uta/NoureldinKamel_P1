@@ -1,0 +1,124 @@
+:root {
+  --bgColor: #f6f6f6;
+  --white: white;
+  --blue: #56baec;
+  --blue-hover: #39ace7;
+  --text-light: #b6a8a7;
+  --text-dark: #0d0d0d;
+  --link-color: #92badd;
+  --inactive-color: #cccccc;
+  --cart-yellow: rgb(243, 199, 2);
+}
+
+.cart-big-holder {
+  border: 5px solid var(--cart-yellow);
+  margin-top: 30px;
+}
+
+.cart-header-grid {
+  display: grid;
+  grid: auto / auto auto auto auto;
+}
+
+.exp-cart-grid {
+  margin: 30pt 0;
+  display: grid;
+  grid: auto auto auto auto/ 50vw auto;
+  gap: 5pt;
+}
+
+.img-div {
+  background-repeat: no-repeat;
+  /* background-image: url("https://media.istockphoto.com/photos/brown-teddy-bear-isolated-in-front-of-a-white-background-picture-id909772478?k=6&m=909772478&s=612x612&w=0&h=X55jzpsKboa_jUjbEN8eqAn0gjt696ldbeJMEqmNrcU="); */
+  background-position: center;
+  background-size: contain;
+  grid-row: 1 / span 5;
+  grid-column: 1 / span 1;
+  border-radius: 5pt;
+}
+
+@media screen and (max-width: 600px) {
+  .exp-cart-grid {
+    grid: 40vh auto auto auto auto/ auto;
+  }
+
+  .img-div {
+    grid-row: 1 / span 1;
+    grid-column: 1 / span 1;
+  }
+}
+
+.input-grid {
+  display: grid;
+  grid: auto / 20pt 1fr 20pt;
+}
+
+.btn-holder {
+  background-color: var(--blue);
+  border-radius: 2pt;
+  padding: 5pt;
+  height: 20pt;
+  text-align: center;
+  cursor: pointer;
+}
+
+.btn-holder:active {
+  background-color: var(--blue-hover);
+}
+
+.cart-btn {
+  background-repeat: no-repeat;
+  /* background-position: center; */
+  background-size: contain;
+  width: 10pt;
+  height: 10pt;
+  /* display: inline-block; */
+}
+
+.cart-btn.plus {
+  background-image: url("../media/plus.png");
+}
+
+.cart-btn.minus {
+  background-image: url("../media/minus-symbol.png");
+}
+
+.stack-grid {
+  margin-left: 30pt;
+  display: grid;
+  grid: auto / auto auto auto;
+}
+
+input[type="number"] {
+  height: 20pt;
+  text-align: center;
+}
+
+.stack-remove {
+  background-color: red;
+  color: var(--white);
+  text-align: center;
+  border-radius: 5pt;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.checkout-container {
+  background-color: var(--cart-yellow);
+  color: var(--text-dark);
+  text-align: center;
+  border-radius: 5pt;
+  line-height: 2;
+  cursor: pointer;
+}
+
+.loading,
+.loading:hover,
+.loading:active {
+  background-color: var(--text-light);
+  cursor: default;
+}
+
+.black-text {
+  color: var(--text-dark);
+}

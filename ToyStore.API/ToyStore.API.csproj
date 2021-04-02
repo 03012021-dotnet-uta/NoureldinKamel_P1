@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>39191bae-d302-4711-a632-bf844957a65d</UserSecretsId>
+    <UserSecretsId>39191bae-d302-4711-a632-bf844957a65d</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.4"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.4" />
+    <!-- <PackageReference Include="Microsoft.Owin.Cors" Version="4.1.1" />
+    <PackageReference Include="Microsoft.Owin.Host.SystemWeb" Version="4.1.1" />
+    <PackageReference Include="Microsoft.Owin.Security.OAuth" Version="4.1.1" /> -->
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ToyStore.Business\ToyStore.Business.csproj" />
+    <ProjectReference Include="..\ToyStore.Models\ToyStore.Models.csproj" />
+    <ProjectReference Include="..\ToyStore.Repository\ToyStore.Repository.csproj" />
+  </ItemGroup>
+
+</Project>

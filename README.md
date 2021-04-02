@@ -14,7 +14,7 @@
 - The user will be able to view a history of order summaries (customer name and total) of any one specific location (at a time).
 - You do not need to include an admin access. Assume any user can do/view these things.
 - Upon log-out, the program will not quit but allow another user to log in.
-- The FE will utilize a .NET ASP.NET WebApp to store data.
+- The FE will utilize a .NET ASP.NET WebApi to store data.
 - The WebApp will use Entity Framework to persist data to a SSMS database.
 - Follow SOLID principles.
 - Use modularization of methods and creation of classes to handle logically related functionality.
@@ -22,7 +22,7 @@
 ## functionality
 
 - place orders at store locations
-- add a new customer
+- Register/Login
 - search customers by name
 - display details of an order
 - display all order history of a store location
@@ -52,28 +52,28 @@
 
 ## customer
 
-- has first name, last name, etc.
+- ✔ has first name, last name, etc.
 - (optional: has a default store location to order from)
 - customer can view orders from whole store
 - customer can order
 
 ## order details
 
-- has a store location
-- has a customer
-- has order completion time
-- can contain multiple types and quantities of product in the same order
+- ✔ has a store location
+- ✔ has a customer
+- ✔ has order completion time
+- ✔ can contain multiple types and quantities of product in the same order
 - rejects orders with unreasonably high product quantities (or more than is available)
 - (optional: some additional business rules, like special deals, bundles)
 
 ## location
 
-- has an inventory
+- ✔ has an inventory
 - inventory decreases when orders are accepted
 - rejects orders that cannot be fulfilled with remaining inventory
 - (optional: for a product, more than one inventory item decrements when ordering that product)
-- tells you the other location has your option
-- additional fee for ordering from a store using another store
+- (optional) tells you the other location has your option
+- (optional) additional fee for ordering from a store using another store
 
 ## product
 
@@ -98,7 +98,7 @@
 - keep CodeNamesLikeThis out of the visible UI.
 - Create different models for customers to view from and populate it from database model
 
-## data access
+# data access
 
 - contained in separate class library project
 - use Dependency Injection for database context
@@ -110,3 +110,9 @@
 
 - at least 20 test methods
 - focus on unit testing business logic
+
+### for macos to create a SQL Server:
+
+> docker run --name sql_server_demo -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=1Secure\*Password1' -e 'MSSQL_PID=Enterprise' -p 1433:1433 -d microsoft/mssql-server-linux:2017-latest
+
+> docker exec -it sql_server_demo /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 1Secure\*Password1

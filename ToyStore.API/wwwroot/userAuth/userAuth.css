@@ -1,0 +1,195 @@
+/* BASIC */
+
+html {
+  background-color: #56baed;
+}
+
+body {
+  background-color: #56baed;
+  height: 100vh;
+}
+
+a {
+  color: #92badd;
+  display: inline-block;
+  text-decoration: none;
+  font-weight: 400;
+}
+
+#login-selector,
+#reg-selector {
+  cursor: pointer;
+}
+
+h3 {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  display: inline-block;
+  margin: 40px 8px 10px 8px;
+  color: #cccccc;
+}
+
+/* STRUCTURE */
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  min-height: 100%;
+  padding: 20px;
+}
+
+#formContent {
+  border-radius: 10px 10px 10px 10px;
+  background: #fff;
+  padding: 30px;
+  width: 90%;
+  max-width: 450px;
+  position: relative;
+  padding: 0px;
+  box-shadow: 0 30px 60px 0 rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+#formFooter {
+  background-color: #f6f6f6;
+  border-top: 1px solid #dce8f1;
+  padding: 25px;
+  text-align: center;
+  border-radius: 0 0 10px 10px;
+}
+
+/* TABS */
+
+h3.btn-inactive {
+  color: #cccccc;
+}
+
+h3.btn-active {
+  color: #0d0d0d;
+  border-bottom: 2px solid #5fbae9;
+}
+
+#login-error-div,
+#reg-error-div {
+  color: red;
+  margin: 5pt;
+}
+/* ANIMATIONS */
+
+/* Simple CSS3 Fade-in-down Animation */
+.fadeInDown {
+  animation-name: fadeInDown;
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+
+@-webkit-keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -100%, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -100%, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Simple CSS3 Fade-in Animation */
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-moz-keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+  opacity: 0;
+  animation: fadeIn ease-in 1;
+
+  animation-fill-mode: forwards;
+  animation-duration: 0.5s;
+}
+
+.fadeIn.first {
+  animation-delay: 0.1s;
+}
+
+.fadeIn.second {
+  animation-delay: 0.2s;
+}
+
+.fadeIn.third {
+  animation-delay: 0.3s;
+}
+
+.fadeIn.fourth {
+  animation-delay: 0.4s;
+}
+
+/* Simple CSS3 Fade-in Animation */
+.btn-inactive:after {
+  display: block;
+  left: 0;
+  bottom: -10px;
+  width: 0;
+  height: 2px;
+  background-color: #56baed;
+  content: "";
+  transition: width 0.2s;
+}
+
+.btn-inactive:hover {
+  color: #0d0d0d;
+}
+
+.btn-inactive:hover:after {
+  width: 100%;
+}
+
+/* OTHERS */
+
+*:focus {
+  outline: none;
+}
+
+#icon {
+  width: 60%;
+}
+
+* {
+  box-sizing: border-box;
+}
