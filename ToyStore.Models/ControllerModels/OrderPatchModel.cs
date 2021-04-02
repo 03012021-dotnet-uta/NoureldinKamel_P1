@@ -4,11 +4,10 @@ using ToyStore.Models.DBModels;
 
 namespace ToyStore.Models.ControllerModels
 {
-#nullable enable
-    public class OrderModel
+    public class OrderPatchModel
     {
-        public List<Guid>? addedStacks { get; set; }
-        public Token? token { get; set; }
+        public Dictionary<Guid, int> newUpdatedStackCount { get; set; }
+        public Token token { get; set; }
 
         // public override string ToString()
         // {

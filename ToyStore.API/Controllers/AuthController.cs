@@ -60,6 +60,21 @@ namespace ToyStore.API.Controllers
         }
 
 
+        [HttpPost("data")]
+        public ActionResult<string> GetUserData([FromBody] Token token)
+        {
+            Customer customerOut;
+            bool sdfs = _authenticator.InnerValidate(token, out customerOut);
+            if (sdfs == true)
+            {
+                _authenticator.GetUserPageData(customerOut);
+                return JsonConvert.SerializeObject(customerOut,
+                         new Newtonsoft.Json.JsonSerializerSettings() { ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore });
+            }
+            return StatusCode(401);
+        }
+
+
         [HttpPost("validateToken")]
         public ActionResult<string> ValidateToken([FromBody] Token token)
         {
@@ -69,6 +84,19 @@ namespace ToyStore.API.Controllers
             {
                 System.Console.WriteLine("token: " + customerOut.CustomerToken);
                 return JsonConvert.SerializeObject(customerOut,
+                         new Newtonsoft.Json.JsonSerializerSettings() { ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore });
+            }
+            return StatusCode(401);
+        }
+
+
+        [HttpPost("logout")]
+        public ActionResult<string> Logout([FromBody] Token token)
+        {
+            bool sdfs = _authenticator.Logout(token);
+            if (sdfs == true)
+            {
+                return JsonConvert.SerializeObject(true,
                          new Newtonsoft.Json.JsonSerializerSettings() { ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore });
             }
             return StatusCode(401);

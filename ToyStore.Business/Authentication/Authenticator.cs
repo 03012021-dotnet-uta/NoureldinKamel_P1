@@ -56,6 +56,14 @@ namespace ToyStore.Business.Authentication
             return false;
         }
 
+
+        /// <summary>
+        /// Validate the token from the browser
+        /// to ensure user is authenticated before.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="customer"></param>
+        /// <returns>true if authenticated</returns>
         public bool ValidateToken(Token token, out Customer customer)
         {
             customer = null;
@@ -70,6 +78,16 @@ namespace ToyStore.Business.Authentication
                 if (savedToken.CheckExpiration())
                 {
                     var c = _currentTokens[savedToken];
+                    c = _toyRepository.GetCustomerWithId(c.CustomerId);
+                    // c.CurrentOrder.cart.ToList().ForEach(s =>
+                    // {
+                    //     s.location.LocationInventory.ToList().ForEach(s =>
+                    //     {
+                    //         System.Console.WriteLine("testing location");
+                    //         System.Console.WriteLine(s.Item);
+                    //     });
+                    // });
+                    c.CustomerToken = savedToken;
                     customer = new Customer();
                     getCleanCustomer(customer, c);
                     return true;
@@ -82,6 +100,28 @@ namespace ToyStore.Business.Authentication
                 return false;
             }
         }
+
+        public bool Logout(Token token)
+        {
+            var savedToken = _currentTokens.Keys.ToList().Where(t =>
+            {
+                System.Console.WriteLine("\nt: " + t.TokenValue + "token: " + token.TokenValue);
+                return t.TokenValue == token.TokenValue;
+            }).First();
+
+            _currentTokens.Remove(savedToken);
+            if (!_currentTokens.Keys.Contains(savedToken))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public void GetUserPageData(Customer customerOut)
+        {
+            // _toyRepository.Get
+        }
+
 
         /// <summary>
         /// put all data in c into customer. <br/>
@@ -102,6 +142,13 @@ namespace ToyStore.Business.Authentication
             emptyCustomer.CustomerUName = savedCustomer.CustomerUName;
         }
 
+
+        /// <summary>
+        /// create a new customer on register
+        /// </summary>
+        /// <param name="authModel"></param>
+        /// <param name="customerOut"></param>
+        /// <returns></returns>
         public bool CreateNewCustomer(AuthModel authModel, out Customer customerOut)
         {
             Customer customer = null;

@@ -14,25 +14,23 @@ if (storageToken != null) {
   buildNavBar();
 }
 
-
-
 function fetchCustomerData() {
   fetch("https://localhost:5001/user/auth/validateToken", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        TokenValue: storageToken
-      }),
-    }).then((response) => {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      TokenValue: storageToken,
+    }),
+  })
+    .then((response) => {
       if (response.status == 200) {
         return response.json();
-      } else
-        throw Error();
+      } else throw Error();
     })
-    .then(textjson => JSON.parse(textjson))
+    .then((textjson) => JSON.parse(textjson))
     .then((obj) => {
       // hide register and login buttons
       // show user name
@@ -55,7 +53,6 @@ function fetchCustomerData() {
     });
 }
 
-
 function tryAddToCart(url, stackId, sellableId, stack, count = 1) {
   console.log("purchasing...");
   // let user = JSON.parse(window.localStorage.getItem("user"));
@@ -73,16 +70,18 @@ function tryAddToCart(url, stackId, sellableId, stack, count = 1) {
     // } else {
     //   args.stackId = stackId
     // }
-    window.localStorage.setItem("args", JSON.stringify({
-      args
-    }));
+    window.localStorage.setItem(
+      "args",
+      JSON.stringify({
+        args,
+      })
+    );
     window.location.href = "https://localhost:5001/userAuth/userAuth.html";
   }
 }
 
 function fetchAddNewStack(stack, count = 1) {
   userOrder = CUSTOMER_OBJ.CurrentOrder;
-
 
   newOrder = _.cloneDeep(userOrder);
   console.log("newOrder...");
@@ -95,36 +94,35 @@ function fetchAddNewStack(stack, count = 1) {
   // newOrder.Cart.add
 
   let data = {
-    UpdateStack: stack,
-    UpdateCount: count,
+    addedStacks: [newStack.SellableStackId],
     token: CUSTOMER_OBJ.CustomerToken,
-    newOrder: newOrder,
-    addedStacks: [newStack]
   };
   // return;
   fetch("https://localhost:5001/user/Cart/order", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
     .then((response) => {
-      if (response.ok)
-        response.json();
-      else
-        throw new Error();
-    }).then((text) => {
+      if (response.ok) response.json();
+      else throw new Error();
+    })
+    .then((text) => {
       console.log(text);
+      window.location.href =
+        "https://localhost:5001/cartDetail/cartDetail.html";
     })
     .catch(() => {
       console.log("error adding to cart");
     });
 }
 
-function buildFloatingCart(user) {
+// CART_OBJ = undefined;
 
+function buildFloatingCart(user) {
   //   <div class="cart-container">
   //   <div class="grid-cart">
   //     <div class="cart">Cart</div>
@@ -135,8 +133,18 @@ function buildFloatingCart(user) {
   //   </div>
   // </div>
 
-  if (user.CurrentOrder != null && user.CurrentOrder.cart != null && user.CurrentOrder.cart.length > 0) {
-
+  if (
+    user.CurrentOrder != null &&
+    user.CurrentOrder.cart != null &&
+    user.CurrentOrder.cart.length > 0
+  ) {
+    if (
+      window.location.href ==
+      "https://localhost:5001/cartDetail/cartDetail.html"
+    ) {
+      setCustomer(CUSTOMER_OBJ);
+      return;
+    }
     const containerDiv = _createDiv("cart-container");
     const gridDiv = _createDiv("grid-cart");
     const totalDiv = _createDiv("cart-total", "", "Total");
@@ -149,26 +157,38 @@ function buildFloatingCart(user) {
     let stackCount = 0;
     let cartTotal = 0;
 
-
-    Array.from(user.CurrentOrder.cart).forEach(stack => {
+    Array.from(user.CurrentOrder.cart).forEach((stack) => {
       stackCount += stack.Count;
-      cartTotal += stack.Item.SellablePrice;
-    })
+      cartTotal += stack.Item.SellablePrice * stack.Count;
+    });
+
     const total = _createDiv("total-price", "", "$" + cartTotal);
     const count = _createDiv("item-count", "", stackCount);
     gridDiv.appendChild(countDiv);
     gridDiv.appendChild(count);
     gridDiv.appendChild(totalDiv);
     gridDiv.appendChild(total);
-  }
 
+    containerDiv.addEventListener("click", (event) => {
+      window.location.href =
+        "https://localhost:5001/cartDetail/cartDetail.html";
+    });
+  }
+}
+
+function __showErrorPopup(message = "Oops, Something went wrong") {
+  const div = _createDiv("error-popup", "", message);
+  document.body.appendChild(div);
+  setTimeout(() => {
+    document.body.removeChild(div);
+  }, 5000);
 }
 
 function changeGetStartedToUser(user) {
   const getStarted = document.querySelector("#login-nav");
   getStarted.innerHTML = `${user.FirstName} ${user.LastName}`;
   getStarted.addEventListener("click", () => {
-    sendToUrl('https://localhost:5001/userProfile/userProfile.html')
+    sendToUrl("https://localhost:5001/userProfile/userProfile.html");
   });
 }
 
@@ -179,7 +199,7 @@ function setupNavLinks() {
   const homeNav = document.querySelector("#home-nav");
   loginNav.addEventListener("click", function () {
     sendToUrl("https://localhost:5001/userAuth/userAuth.html", {
-      from: window.location.pathname
+      from: window.location.pathname,
     });
   });
 }
@@ -211,10 +231,10 @@ function buildNavBar() {
   navList.appendChild(home);
   navList.appendChild(tags);
   navList.appendChild(register);
-  home.addEventListener(("click"), () => {
+  home.addEventListener("click", () => {
     sendToUrl("https://localhost:5001/index.html");
   });
-  register.addEventListener(("click"), () => {
+  register.addEventListener("click", () => {
     sendToUrl("https://localhost:5001/userAuth/userAuth.html");
   });
 }

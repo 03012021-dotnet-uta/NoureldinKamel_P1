@@ -39,8 +39,8 @@ namespace ToyStore.Repository.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // optionsBuilder.UseSqlServer(@"Server=.\PRODDB;Database=ToyStoreP1NNK;Trusted_Connection=True;");
-            optionsBuilder.UseSqlServer(@"Server=127.0.0.1;Database=ToyStoreP1NNK;User Id=SA;Password=1Secure*Password1;");
+            optionsBuilder.UseSqlServer(@"Server=.\PRODDB;Database=ToyStoreP1NNK;Trusted_Connection=True;");
+            // optionsBuilder.UseSqlServer(@"Server=127.0.0.1;Database=ToyStoreP1NNK;User Id=SA;Password=1Secure*Password1;");
             // optionsBuilder.UseSqlServer(Microsoft.Extensions.Configuration.IConfiguration.GetConnectionString("ToysDb"));
             // base.OnConfiguring(optionsBuilder);
             optionsBuilder.EnableSensitiveDataLogging(true);

@@ -5,9 +5,9 @@ using ToyStore.Models.DBModels;
 namespace ToyStore.Models.ControllerModels
 {
 #nullable enable
-    public class OrderModel
+    public class OrderDeleteModel
     {
-        public List<Guid>? addedStacks { get; set; }
+        public List<Guid>? removedStacks { get; set; }
         public Token? token { get; set; }
 
         // public override string ToString()

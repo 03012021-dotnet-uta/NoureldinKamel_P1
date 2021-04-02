@@ -30,13 +30,13 @@ const data = {
 };
 
 fetch(url, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  })
+  method: "POST",
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify(data),
+})
   .then((response) => response.json())
   .then((textjson) => {
     return JSON.parse(textjson);
@@ -45,29 +45,27 @@ fetch(url, {
     console.log(itemObj);
     STACK_ID = itemObj.Stack.SellableStackId;
     buildPage(itemObj);
-  });
-
-fetch("../api/toy/customers", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  })
-  .then((response) => response.json())
-  .then((textjson) => {
-    return JSON.parse(textjson);
-  })
-  .then((customerList) => {
-    console.log(customerList);
-    buildStackCustomers(customerList);
+    fetch("../api/toy/customers", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((textjson) => {
+        return JSON.parse(textjson);
+      })
+      .then((customerList) => {
+        console.log(customerList);
+        buildStackCustomers(customerList, itemObj);
+      });
   });
 
 // todo: get the customers that bought it
 
-function buildStackCustomers(customerList) {
-
+function buildStackCustomers(customerList, itemObj) {
   //   <div class="customer-info black-shadow">
   //   <span>User: </span>
   //   <span>asdfafds</span>
@@ -78,12 +76,24 @@ function buildStackCustomers(customerList) {
   console.log(customerList);
   if (customerList.length > 0) {
     const div = document.querySelector("#div-scroll");
-    Array.from(customerList).forEach(customer => {
+    Array.from(customerList).forEach((customer) => {
       const custDiv = createDivwClass("customer-info black-shadow");
       const userSpan = createSpanwClass("", "User");
-      const userName = createSpanwClass("", `${customer.FirstName} ${customer.LastName}`);
-      const amountSpan = createSpanwClass("", "Amount");
-      const amountCount = createSpanwClass("", `${customer.FinishedOrders[0].Cart[0].Count}`);
+      const userName = createSpanwClass(
+        "",
+        `${customer.FirstName} ${customer.LastName}`
+      );
+      const amountSpan = createSpanwClass("", "Amount Bought");
+      let total = 0;
+      Array.from(customer.FinishedOrders).forEach((order) => {
+        Array.from(order.cart).forEach((stack) => {
+          if (itemObj.Stack.Item.SellableId == stack.Item.SellableId)
+            total += parseInt(stack.Count);
+          console.log("total");
+          console.log(total);
+        });
+      });
+      const amountCount = createSpanwClass("", `${total}`);
       custDiv.appendChild(userSpan);
       custDiv.appendChild(userName);
       custDiv.appendChild(amountSpan);
@@ -130,7 +140,7 @@ function buildPage(something) {
     bigDiv.appendChild(h22);
     productcarousel.appendChild(horizontalslider);
     bigDiv.appendChild(productcarousel);
-    Array.from(alts).forEach(stack => {
+    Array.from(alts).forEach((stack) => {
       console.log("first stack in alts: ");
       console.log(stack);
       let stackdiv = createDivwClass("product-img-holder");
@@ -150,7 +160,6 @@ function buildPage(something) {
       // buildProductSection(stack, prodInfoDiv);
     });
   }
-
 }
 
 function buildAddToCartButton(infoSection, stack) {
@@ -165,7 +174,6 @@ function buildAddToCartButton(infoSection, stack) {
     tryAddToCart(url, STACK_ID, SELLABLE_ID, stack, 1);
   });
 }
-
 
 function buildProductSection(itemStack, customerSection) {
   console.log(itemStack);
@@ -197,12 +205,18 @@ function buildProductSection(itemStack, customerSection) {
     const prodInfoDiv = createDivwClass("product-info");
     sellableDiv.appendChild(prodInfoDiv);
 
-    buildInfoBeforeSave({
-      Item: sellable
-    }, prodInfoDiv);
-    buildInfoAfterSave({
-      Item: sellable
-    }, prodInfoDiv);
+    buildInfoBeforeSave(
+      {
+        Item: sellable,
+      },
+      prodInfoDiv
+    );
+    buildInfoAfterSave(
+      {
+        Item: sellable,
+      },
+      prodInfoDiv
+    );
     sliderDiv.appendChild(sellableDiv);
     productsSection.appendChild(productsHolderDiv);
   });
@@ -229,7 +243,10 @@ function buildInfoAfterSave(itemStack, infoSection) {
 
   if (itemStack.location != undefined) {
     let fromInfo = createSpanwClass("info-title", "From: ");
-    let fromDesc = createSpanwClass("info-desc", itemStack.location.LocationName);
+    let fromDesc = createSpanwClass(
+      "info-desc",
+      itemStack.location.LocationName
+    );
     infoSection.appendChild(document.createElement("br"));
     infoSection.appendChild(document.createElement("br"));
     infoSection.appendChild(fromInfo);
@@ -251,7 +268,6 @@ function buildInfoBeforeSave(itemStack, infoSection) {
     "$" + itemStack.Item.SellablePrice
   );
 
-
   infoSection.appendChild(nameTitleSn);
   infoSection.appendChild(nameDescSn);
   infoSection.appendChild(document.createElement("br"));
@@ -266,16 +282,12 @@ function buildInfoBeforeSave(itemStack, infoSection) {
   infoSection.appendChild(document.createElement("br"));
   if (itemStack.Count != undefined) {
     let stockTitleSn = createSpanwClass("info-title", "Left in stock: ");
-    let stockDescSn = createSpanwClass(
-      "info-desc",
-      itemStack.Count
-    );
+    let stockDescSn = createSpanwClass("info-desc", itemStack.Count);
     infoSection.appendChild(stockTitleSn);
     infoSection.appendChild(stockDescSn);
     infoSection.appendChild(document.createElement("br"));
     infoSection.appendChild(document.createElement("br"));
   }
-
 }
 
 function displayOfferProductsInDiv(stack, infoDiv) {
@@ -307,8 +319,6 @@ function createMainProductImg(itemStack) {
 
   imgSection.appendChild(imgHolderDiv);
   imgHolderDiv.appendChild(imgBgDiv);
-
-
 }
 
 function createDivwClass(classList) {

@@ -7,10 +7,30 @@
   --text-dark: #0d0d0d;
   --link-color: #92badd;
   --inactive-color: #cccccc;
+  --cart-yellow: rgb(243, 199, 2);
 }
 
 a {
   text-decoration: none;
+}
+
+.error-popup {
+  border: 3px solid red;
+  background-color: var(--white);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px 0 rgba(95, 186, 233, 0.4);
+  padding: 20pt;
+  color: red;
+  display: inline-block;
+  width: fit-content;
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  text-align: center;
+  /* margin-left: -50%; */
+  transform: translateX(-50%);
+  /* margin-right: auto; */
+  z-index: 9999;
 }
 
 /* FORM TYPOGRAPHY*/
@@ -223,7 +243,7 @@ h2 {
 
 /* cart section */
 .cart-container {
-  background-color: rgb(243, 199, 2);
+  background-color: var(--cart-yellow);
   display: inline-block;
   position: fixed;
   padding: 5pt;
@@ -231,6 +251,7 @@ h2 {
   top: 60pt;
   border-radius: 5pt;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  cursor: pointer;
 }
 
 .cart-container * {
@@ -276,4 +297,13 @@ h2 {
     grid-column: 5 / span 1;
     grid-row: 1 / span 1;
   }
+}
+
+*::-webkit-scrollbar {
+  height: 10px;
+  /* background-color: white; */
+}
+*::-webkit-scrollbar-thumb {
+  height: 10px;
+  background-color: var(--blue);
 }

@@ -183,7 +183,7 @@ h2 {
   background-color: var(--white);
   border-radius: 5pt;
   display: grid;
-  grid: auto auto / min-content min-content;
+  grid: auto auto / auto auto;
   gap: 5pt;
 }
 

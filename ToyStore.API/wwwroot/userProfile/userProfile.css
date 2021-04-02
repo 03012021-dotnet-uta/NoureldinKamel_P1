@@ -86,3 +86,43 @@ input[type="password"] {
   transition: all 0.5s ease-in-out;
   border-radius: 5px 5px 5px 5px;
 }
+
+.div-scroll {
+  height: 200px;
+  overflow-y: scroll;
+  padding: 5pt 10pt;
+  /* background-color: var(--bgColor); */
+  border-radius: 5pt;
+  /* background-color: var(--blue); */
+}
+
+.order-div {
+  display: grid;
+  grid: auto/auto auto auto auto;
+  padding: 6pt;
+  /* background-color: var(--link-color); */
+  /* border-radius: 5pt; */
+}
+
+.div-scroll::-webkit-scrollbar {
+  height: 10px;
+  /* background-color: white; */
+}
+.div-scroll::-webkit-scrollbar-thumb {
+  height: 10px;
+  background-color: var(--blue);
+}
+
+.logout {
+  color: white;
+  border-radius: 5pt;
+  background-color: red;
+  display: inline-block;
+  padding: 5px;
+  margin-bottom: 10pt;
+  cursor: pointer;
+}
+
+/* .item-name {
+  color: white;
+} */

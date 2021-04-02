@@ -47,7 +47,9 @@ namespace ToyStore.Models.DBModels
         /// </summary>
         /// <value></value>
         public Order? order { get; set; }
-        // public Guid? orderId { get; set; }
+        public Guid? orderId { get; set; }
+
+        public bool PurchasedInOrder { get; set; }
 
         public List<Tag> GetTags()
         {

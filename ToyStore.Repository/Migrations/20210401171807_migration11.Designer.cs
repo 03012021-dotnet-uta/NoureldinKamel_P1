@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ToyStore.Repository.Models;
 
 namespace ToyStore.Repository.Migrations
 {
     [DbContext(typeof(DbContextClass))]
-    partial class DbContextClassModelSnapshot : ModelSnapshot
+    [Migration("20210401171807_migration11")]
+    partial class migration11
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,9 +141,6 @@ namespace ToyStore.Repository.Migrations
 
                     b.Property<Guid>("ItemSellableId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("PurchasedInOrder")
-                        .HasColumnType("bit");
 
                     b.Property<Guid?>("locationId")
                         .HasColumnType("uniqueidentifier");
