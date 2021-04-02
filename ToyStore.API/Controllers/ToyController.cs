@@ -76,6 +76,8 @@ namespace ToyStore.API.Controllers
             // return jsonString;
         }
 
+
+
         [HttpGet("tags")]
         public List<string> GetTags()
         {
@@ -100,6 +102,22 @@ namespace ToyStore.API.Controllers
             System.Console.WriteLine("hello?: " + k);
             // var oj = id.Property("id");
             var nameList = sellableLogic.GetStackPageDetails(id);
+            // var ser = Newtonsoft.Json.JsonSerializer.Create(
+            // );
+
+            return JsonConvert.SerializeObject(nameList,
+                 new Newtonsoft.Json.JsonSerializerSettings() { ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore });
+            // return nameList;
+            // return new SellableStack();
+
+        }
+
+
+        [HttpPost("recommended")]
+        public string GetProductDetail([FromBody] Guid id)
+        {
+            // var oj = id.Property("id");
+            var nameList = sellableLogic.GetRecommendedStacks(id);
             // var ser = Newtonsoft.Json.JsonSerializer.Create(
             // );
 

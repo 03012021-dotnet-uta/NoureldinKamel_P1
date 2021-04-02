@@ -93,12 +93,15 @@ function buildStackCustomers(customerList, itemObj) {
           console.log(total);
         });
       });
-      const amountCount = createSpanwClass("", `${total}`);
-      custDiv.appendChild(userSpan);
-      custDiv.appendChild(userName);
-      custDiv.appendChild(amountSpan);
-      custDiv.appendChild(amountCount);
-      div.appendChild(custDiv);
+      if (total == 0) {
+      } else {
+        const amountCount = createSpanwClass("", `${total}`);
+        custDiv.appendChild(userSpan);
+        custDiv.appendChild(userName);
+        custDiv.appendChild(amountSpan);
+        custDiv.appendChild(amountCount);
+        div.appendChild(custDiv);
+      }
     });
   }
 }

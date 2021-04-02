@@ -1,10 +1,12 @@
 "use-strict";
 console.log("js working");
+var offerList = Array();
 
 // fetch("api/WeatherForecast")
 fetch("api/toy")
   .then((response) => response.json())
   .then((textjson) => {
+    console.log("textjson");
     console.log(textjson);
     DisplayStackList(textjson);
     DisplayOfferList();
@@ -16,6 +18,31 @@ fetch("api/toy/tags")
     console.log(textjson);
   });
 
+// let customer = getCustomer();
+function GetRecommended(customer) {
+  // console.log(customer);
+  // if (customer != undefined) {
+  //   fetch("https://localhost:5001/api/toy/recommended", {
+  //     method: "POST",
+  //     headers: {
+  //       Accept: "application/json",
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(customer.CustomerId),
+  //   })
+  //     .then((response) => {
+  //       if (response.status == 200) {
+  //         return response.json();
+  //       } else throw Error();
+  //     })
+  //     .then((textjson) => JSON.parse(textjson))
+  //     .then((obj) => {
+  //       console.log("recommendedstacks: ");
+  //       console.log(obj);
+  //     })
+  //     .catch((error) => {});
+  // }
+}
 // .catch(error => {
 //     console.log(error);
 // });
@@ -28,9 +55,6 @@ fetch("api/toy/tags")
 //         console.log(textjson);
 //         DisplayStackList(textjson);
 //     })
-
-var offerList = Array();
-
 
 function DisplayStackList(stackList) {
   let cardDiv = null;
@@ -45,13 +69,7 @@ function DisplayStackList(stackList) {
 
   for (let i = 0; i < stackList.length; i++) {
     stack = stackList[i];
-    ({
-      cardDiv,
-      imgDiv,
-      tagDiv,
-      infoDiv,
-      img
-    } = createMainDivs());
+    ({ cardDiv, imgDiv, tagDiv, infoDiv, img } = createMainDivs());
 
     displayBeforeOfferSave(
       toyCarouselDiv,
@@ -86,13 +104,7 @@ function DisplayOfferList() {
   for (let i = 0; i < stackList.length; i++) {
     stack = stackList[i];
     console.log(stack);
-    ({
-      cardDiv,
-      imgDiv,
-      tagDiv,
-      infoDiv,
-      img
-    } = createMainDivs());
+    ({ cardDiv, imgDiv, tagDiv, infoDiv, img } = createMainDivs());
 
     displayBeforeOfferSave(
       toyCarouselDiv,
